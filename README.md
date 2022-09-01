@@ -15,5 +15,7 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+Introduction to localizations in Flutter: view [internationalization](https://docs.flutter.dev/development/accessibility-and-localization/internationalization)  
+  
 ## Demo:  
 ![flutter-dashboard-example](flutter_example.gif)  

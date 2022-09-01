@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:thingsboard_client/thingsboard_client.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -13,33 +15,28 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  //late SharedPreferences _logindprefs;
   final storage = FlutterSecureStorage();
   int _selectedDestination = 0;
-  late Color? color;
   String? _username;
 
   @override
   void initState() {
     super.initState();
 
-    color = Colors.transparent;
     _loadUserInfo();
   }
 
   void _loadUserInfo() async {
-    //_logindprefs = await SharedPreferences.getInstance();
     _username = await storage.read(key: "username");
     setState(() {
-      //_username = (_logindprefs.getString('username') ?? '');
       _username = _username!.substring(0, _username?.indexOf('@'));
     });
   }
 
   void _clearUserInfo() async {
-    //_logindprefs = await SharedPreferences.getInstance();
-    //await _logindprefs.clear();
+    var tbClient = ThingsboardClient(dotenv.env['API_URL'] ?? '');
     await storage.delete(key: "username");
+    await tbClient.logout();
   }
 
   @override
@@ -55,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
           backgroundColor: Colors.transparent,
           key: scaffoldKey,
           appBar: AppBar(
-            title: Text("Demo HomePage"),
+            title: Text(AppLocalizations.of(context)!.homeAppBarTitle),
             leading: IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
@@ -93,10 +90,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     thickness: 2,
                     color: Colors.white,
                   ),
-                  buildListTile('Home', 0, Icons.home),
-                  buildListTile('Device', 1, Icons.devices),
-                  buildListTile('Dashboard', 2, Icons.dashboard),
-                  buildListTile('Logout', 3, Icons.logout),
+                  buildListTile(
+                      AppLocalizations.of(context)!.drawerHome, 0, Icons.home),
+                  buildListTile(AppLocalizations.of(context)!.drawerDevice, 1,
+                      Icons.devices),
+                  buildListTile(AppLocalizations.of(context)!.drawerDashboard,
+                      2, Icons.dashboard),
+                  buildListTile(AppLocalizations.of(context)!.drawerLogout, 3,
+                      Icons.logout),
                 ],
               ),
             ),
@@ -116,6 +117,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+                    Text(
+                      dotenv.env['API_URL'] ?? 'API_URL not found',
+                      style: TextStyle(color: Colors.purpleAccent),
+                    )
                   ],
                 ),
               ),

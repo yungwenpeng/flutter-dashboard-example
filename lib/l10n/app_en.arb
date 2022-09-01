@@ -1,0 +1,9 @@
+{
+    "welcomeHomePage": "Welcome to Demo Homepage!",
+    "homeAppBarTitle": "Demo HomePage",
+    "loginAppBarTitle": "Login",
+    "drawerHome": "­Home",
+    "drawerDevice": "Device",
+    "drawerDashboard": "Dashboard",
+    "drawerLogout": "Logout"
+}

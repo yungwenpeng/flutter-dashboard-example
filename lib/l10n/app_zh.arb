@@ -1,0 +1,9 @@
+{
+    "welcomeHomePage": "歡迎來到首頁, 請登入以繼續!",
+    "homeAppBarTitle": "歡迎來到首頁！",
+    "loginAppBarTitle": "登入",
+    "drawerHome": "首頁",
+    "drawerDevice": "設備",
+    "drawerDashboard": "儀表版",
+    "drawerLogout": "登出"
+}

@@ -1,11 +1,16 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thingsboard_app/landing.dart';
 import 'package:thingsboard_app/pages/home.dart';
 import 'package:thingsboard_app/pages/login.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
 
@@ -34,6 +39,8 @@ class MyApp extends StatelessWidget {
         '/home': (context) => MyHomePage(),
         '/login': (context) => Login(),
       },
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

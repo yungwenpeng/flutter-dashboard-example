@@ -1,9 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-// https://pub.dev/packages/shared_preferences
-// The package shared_preferences is being used here to access the persistent store for simple data.
-//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Landing extends StatefulWidget {
@@ -14,7 +11,6 @@ class Landing extends StatefulWidget {
 }
 
 class _LandingState extends State<Landing> {
-  //late SharedPreferences _logindprefs;
   final storage = FlutterSecureStorage();
   String? _username;
 
@@ -26,8 +22,6 @@ class _LandingState extends State<Landing> {
   }
 
   _loadUserInfo() async {
-    //_logindprefs = await SharedPreferences.getInstance();
-    //_username = (_logindprefs.getString('username') ?? "");
     _username = await storage.read(key: "username");
     // Don't want to give the user the ability to navigate back to the landing
     // screen from either login or home screen.

@@ -1,9 +1,11 @@
-// ignore_for_file: prefer_const_constructors, unused_field, unused_import
+// ignore_for_file: prefer_const_constructors, unused_import
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:thingsboard_client/thingsboard_client.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -21,8 +23,6 @@ class _LoginState extends State<Login> {
   // Note: This is a GlobalKey<FormState>,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
-
-  bool _autovalidate = false;
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final storage = FlutterSecureStorage();
@@ -59,11 +59,14 @@ class _LoginState extends State<Login> {
   }
 
   void showInSnackBar(String value) {
-    _scaffoldMessengerKey.currentState?.showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(value, textAlign: TextAlign.center),
+        content: Text(
+          value,
+          textAlign: TextAlign.center,
+        ),
         duration: Duration(milliseconds: 2000),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.redAccent,
       ),
     );
   }
@@ -71,19 +74,19 @@ class _LoginState extends State<Login> {
   void _loginSubmitted() async {
     final FormState? form = _formKey.currentState;
     if (form == null || !form.validate()) {
-      _autovalidate = true; // Start validating on every change.
       showInSnackBar('Please fix the errors in red before submitting.');
     } else {
       form.save();
-      if (passwordController.text == "password") {
-        //SharedPreferences prefs = await SharedPreferences.getInstance();
-        //prefs.setString("username", usernameController.text);
+      try {
+        var tbClient = ThingsboardClient(dotenv.env['API_URL'] ?? '');
+        await tbClient.login(
+            LoginRequest(usernameController.text, passwordController.text));
         await storage.write(key: "username", value: usernameController.text);
         // ignore: use_build_context_synchronously
         Navigator.pushNamedAndRemoveUntil(
             context, '/home', ModalRoute.withName('/home'));
-      } else {
-        showInSnackBar('Incorrect credentials');
+      } catch (e) {
+        showInSnackBar('Invalid username or password');
       }
     }
   }
@@ -107,7 +110,7 @@ class _LoginState extends State<Login> {
         key: _scaffoldMessengerKey,
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: Text("Login"),
+          title: Text(AppLocalizations.of(context)!.loginAppBarTitle),
         ),
         body: SafeArea(
           child: Form(
@@ -126,7 +129,7 @@ class _LoginState extends State<Login> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'Welcome to Demo Homepage!',
+                      AppLocalizations.of(context)!.welcomeHomePage,
                       style: TextStyle(
                         color: Colors.black.withOpacity(0.6),
                         fontSize: 24,
@@ -134,7 +137,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     SizedBox(height: 20.0),
-                    buildTextField('Username'),
+                    buildTextField('Username(email)'),
                     SizedBox(
                       height: 20.0,
                     ),
@@ -159,7 +162,8 @@ class _LoginState extends State<Login> {
                         _loginSubmitted(); // Respond to button press
                       },
                       icon: Icon(Icons.login, size: 20),
-                      label: Text("Login"),
+                      label:
+                          Text(AppLocalizations.of(context)!.loginAppBarTitle),
                     ),
                   ],
                 ),
@@ -205,7 +209,7 @@ class _LoginState extends State<Login> {
             : null,
         counterText: hintText == "Password"
             ? '${passwordController.text.length.toString()} character(s)'
-            : '${usernameController.text.length.toString()} character(s)',
+            : null,
       ),
       obscureText: hintText == "Password" ? _isHidden : false,
       validator: (String? value) {
