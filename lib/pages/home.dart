@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -12,7 +13,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  late SharedPreferences _logindprefs;
+  //late SharedPreferences _logindprefs;
+  final storage = FlutterSecureStorage();
   int _selectedDestination = 0;
   late Color? color;
   String? _username;
@@ -26,16 +28,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _loadUserInfo() async {
-    _logindprefs = await SharedPreferences.getInstance();
+    //_logindprefs = await SharedPreferences.getInstance();
+    _username = await storage.read(key: "username");
     setState(() {
-      _username = (_logindprefs.getString('username') ?? '');
+      //_username = (_logindprefs.getString('username') ?? '');
       _username = _username!.substring(0, _username?.indexOf('@'));
     });
   }
 
   void _clearUserInfo() async {
-    _logindprefs = await SharedPreferences.getInstance();
-    await _logindprefs.clear();
+    //_logindprefs = await SharedPreferences.getInstance();
+    //await _logindprefs.clear();
+    await storage.delete(key: "username");
   }
 
   @override

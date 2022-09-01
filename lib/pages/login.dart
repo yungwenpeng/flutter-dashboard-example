@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -24,6 +25,7 @@ class _LoginState extends State<Login> {
   bool _autovalidate = false;
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final storage = FlutterSecureStorage();
   bool _isHidden = true;
 
   @override
@@ -74,8 +76,9 @@ class _LoginState extends State<Login> {
     } else {
       form.save();
       if (passwordController.text == "password") {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString("username", usernameController.text);
+        //SharedPreferences prefs = await SharedPreferences.getInstance();
+        //prefs.setString("username", usernameController.text);
+        await storage.write(key: "username", value: usernameController.text);
         // ignore: use_build_context_synchronously
         Navigator.pushNamedAndRemoveUntil(
             context, '/home', ModalRoute.withName('/home'));
@@ -140,9 +143,9 @@ class _LoginState extends State<Login> {
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         // Foreground color
-                        onPrimary: Theme.of(context).colorScheme.onPrimary,
-                        // Background color
-                        primary: Colors.blueAccent,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
+                        backgroundColor: Colors.blueAccent,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25)),
                         minimumSize: const Size.fromHeight(50),
