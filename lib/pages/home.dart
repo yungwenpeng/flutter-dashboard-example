@@ -1,10 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:thingsboard_client/thingsboard_client.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../model/thingsboard_client_base_provider.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -15,7 +16,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final storage = FlutterSecureStorage();
   int _selectedDestination = 0;
   String? _username;
 
@@ -27,15 +27,19 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _loadUserInfo() async {
-    _username = await storage.read(key: "username");
+    var tbClientBaseProvider =
+        Provider.of<ThingsBoardClientBaseProvider>(context, listen: false);
+    var tbClient = tbClientBaseProvider.tbClient;
+    _username = tbClient.getAuthUser()?.sub;
     setState(() {
       _username = _username!.substring(0, _username?.indexOf('@'));
     });
   }
 
   void _clearUserInfo() async {
-    var tbClient = ThingsboardClient(dotenv.env['API_URL'] ?? '');
-    await storage.delete(key: "username");
+    var tbClientBaseProvider =
+        Provider.of<ThingsBoardClientBaseProvider>(context, listen: false);
+    var tbClient = tbClientBaseProvider.tbClient;
     await tbClient.logout();
   }
 

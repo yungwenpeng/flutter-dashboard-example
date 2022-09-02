@@ -17,5 +17,7 @@ samples, guidance on mobile development, and a full API reference.
 
 Introduction to localizations in Flutter: view [internationalization](https://docs.flutter.dev/development/accessibility-and-localization/internationalization)  
   
+Thingsboard Dart API Client can be found [here](https://thingsboard.io/docs/reference/dart-client/).  
+
 ## Demo:  
 ![flutter-dashboard-example](flutter_example.gif)  

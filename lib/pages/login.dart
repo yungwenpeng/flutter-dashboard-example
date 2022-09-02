@@ -3,9 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:thingsboard_client/thingsboard_client.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../model/thingsboard_client_base_provider.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -25,7 +27,6 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-  final storage = FlutterSecureStorage();
   bool _isHidden = true;
 
   @override
@@ -77,11 +78,12 @@ class _LoginState extends State<Login> {
       showInSnackBar('Please fix the errors in red before submitting.');
     } else {
       form.save();
+      var tbClientBaseProvider =
+          Provider.of<ThingsBoardClientBaseProvider>(context, listen: false);
+      var tbClient = tbClientBaseProvider.tbClient;
       try {
-        var tbClient = ThingsboardClient(dotenv.env['API_URL'] ?? '');
         await tbClient.login(
             LoginRequest(usernameController.text, passwordController.text));
-        await storage.write(key: "username", value: usernameController.text);
         // ignore: use_build_context_synchronously
         Navigator.pushNamedAndRemoveUntil(
             context, '/home', ModalRoute.withName('/home'));
