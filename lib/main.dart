@@ -9,6 +9,7 @@ import 'package:url_strategy/url_strategy.dart';
 import 'landing.dart';
 import 'pages/home.dart';
 import 'pages/login.dart';
+import 'pages/device_list.dart';
 import 'model/thingsboard_client_base_provider.dart';
 
 Future<void> main() async {
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => Landing(),
           '/home': (context) => MyHomePage(),
           '/login': (context) => Login(),
+          '/devices': (context) => MyDevicesPage(),
         },
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

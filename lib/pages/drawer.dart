@@ -88,6 +88,8 @@ class _MyDrawerState extends State<MyDrawer> {
             context, '/home', ModalRoute.withName('/home'));
         break;
       case 1:
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/devices', ModalRoute.withName('/devices'));
         break;
       case 2:
         break;

@@ -2,8 +2,17 @@
     "welcomeHomePage": "歡迎來到首頁, 請登入以繼續!",
     "homeAppBarTitle": "歡迎來到首頁！",
     "loginAppBarTitle": "登入",
+    "deviceAppBarTitle": "設備清單",
     "drawerHome": "首頁",
     "drawerDevice": "設備",
     "drawerDashboard": "儀表版",
-    "drawerLogout": "登出"
+    "drawerLogout": "登出",
+
+    "deviceDetails" : "顯示詳細內容",
+    "deviceName": "設備名稱",
+    "deviceId": "設備ID",
+    "deviceCreateTime": "建立時間",
+    "deviceLabel": "設備標籤",
+    "deviceFirmwareId": "指定的韌體ID",
+    "deviceSoftwareId": "指定的軟體ID"
 }

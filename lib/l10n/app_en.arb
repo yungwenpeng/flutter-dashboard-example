@@ -2,8 +2,17 @@
     "welcomeHomePage": "Welcome to Demo Homepage!",
     "homeAppBarTitle": "Demo HomePage",
     "loginAppBarTitle": "Login",
+    "deviceAppBarTitle": "Device list",
     "drawerHome": "­Home",
     "drawerDevice": "Device",
     "drawerDashboard": "Dashboard",
-    "drawerLogout": "Logout"
+    "drawerLogout": "Logout",
+
+    "deviceDetails" : "Show details",
+    "deviceName": "Name",
+    "deviceId": "Id",
+    "deviceCreateTime": "Create time",
+    "deviceLabel": "Label",
+    "deviceFirmwareId": "Assigned firmware ID",
+    "deviceSoftwareId": "Assigned software ID"
 }

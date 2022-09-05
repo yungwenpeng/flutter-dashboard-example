@@ -16,6 +16,13 @@ class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   String? _username;
 
+  void _clearUserInfo() async {
+    var tbClientBaseProvider =
+        Provider.of<ThingsBoardClientBaseProvider>(context, listen: false);
+    var tbClient = tbClientBaseProvider.tbClient;
+    await tbClient.logout();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +60,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 scaffoldKey.currentState?.openDrawer();
               },
             ),*/
+            actions: [
+              IconButton(
+                  icon: const Icon(Icons.logout),
+                  onPressed: (() {
+                    _clearUserInfo();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/login', ModalRoute.withName('/login'));
+                  })),
+            ],
           ),
           drawer: const MyDrawer(),
           body: SafeArea(
