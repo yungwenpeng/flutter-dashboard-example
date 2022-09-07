@@ -29,7 +29,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void _loadUserInfo() async {
     _username = await storage.read(key: "username");
     setState(() {
-      _username = _username!.substring(0, _username?.indexOf('@'));
+      _username = _username!.contains('@')
+          ? (_username!.substring(0, _username?.indexOf('@')))
+          : _username;
     });
   }
 

@@ -77,16 +77,15 @@ class _LoginState extends State<Login> {
       showInSnackBar('Please fix the errors in red before submitting.');
     } else {
       form.save();
-      try {
-        var tbClient = ThingsboardClient(dotenv.env['API_URL'] ?? '');
-        await tbClient.login(
-            LoginRequest(usernameController.text, passwordController.text));
+      if (passwordController.text == "password") {
+        //SharedPreferences prefs = await SharedPreferences.getInstance();
+        //prefs.setString("username", usernameController.text);
         await storage.write(key: "username", value: usernameController.text);
         // ignore: use_build_context_synchronously
         Navigator.pushNamedAndRemoveUntil(
             context, '/home', ModalRoute.withName('/home'));
-      } catch (e) {
-        showInSnackBar('Invalid username or password');
+      } else {
+        showInSnackBar('Incorrect credentials');
       }
     }
   }
@@ -222,8 +221,8 @@ class _LoginState extends State<Login> {
             value.length < 8) {
           return 'Minimum character length is 8';
         } else if (value != null &&
-            hintText == "Username" &&
-            !value.contains("@")) {
+            hintText == "Username(email)" &&
+            !(value.contains("@"))) {
           return 'Username need @ character';
         } else {
           return null;

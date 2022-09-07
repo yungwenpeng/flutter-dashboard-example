@@ -2,15 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:url_strategy/url_strategy.dart';
 
-import 'package:thingsboard_app/landing.dart';
-import 'package:thingsboard_app/pages/home.dart';
-import 'package:thingsboard_app/pages/login.dart';
+import 'landing.dart';
+import 'pages/home.dart';
+import 'pages/login.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: '.env');
+  // remove hash symbol(#) on the url like http://localhost:8080/#/
+  // reference https://github.com/flutter/flutter/issues/33245#issuecomment-760214554
+  setPathUrlStrategy();
   runApp(const MyApp());
 }
 
