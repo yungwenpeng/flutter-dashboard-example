@@ -30,6 +30,46 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final PageRouterDelegate _routerDelegate = PageRouterDelegate();
+  final PageRouteInformationParser _routeInformationParser =
+      PageRouteInformationParser();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: widget.title,
+      routerDelegate: _routerDelegate,
+      routeInformationParser: _routeInformationParser,
+    );
+  }
+}
+
+class PageRoutePath {
+  final int? id;
+  final bool isUnknown;
+
+  PageRoutePath.home()
+      : id = null,
+        isUnknown = false;
+
+  PageRoutePath.details(this.id) : isUnknown = false;
+
+  PageRoutePath.unknown()
+      : id = null,
+        isUnknown = true;
+
+  bool get isHomePage => id == null;
+
+  bool get isDetailsPage => id != null;
+
+  PageRoutePath(this.id, this.isUnknown);
+}
+
+class PageRouterDelegate extends RouterDelegate<PageRoutePath>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageRoutePath> {
+  @override
+  final GlobalKey<NavigatorState> navigatorKey;
+
   PageList? _selectedPage;
   bool show404 = false;
 
@@ -39,42 +79,117 @@ class _MyHomePageState extends State<MyHomePage> {
     PageList('Third Page', 'Item3'),
   ];
 
+  PageRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
+
   void _handlePageTapped(PageList page) {
-    setState(() {
-      _selectedPage = page;
-    });
+    _selectedPage = page;
+    notifyListeners();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: widget.title,
-      home: Navigator(
-        pages: [
-          MaterialPage(
-            key: const ValueKey('PagesList'),
-            child: PagesListScreen(
-              pages: pages,
-              onTapped: _handlePageTapped,
-            ),
+    return Navigator(
+      key: navigatorKey,
+      pages: [
+        MaterialPage(
+          key: const ValueKey('PagesListPage'),
+          child: PagesListScreen(
+            pages: pages,
+            onTapped: _handlePageTapped,
           ),
-          if (show404)
-            const MaterialPage(
-                key: ValueKey('UnknownPage'), child: UnknownScreen()),
-          if (_selectedPage != null) PageDetailsPage(page: _selectedPage!)
-        ],
-        onPopPage: (route, result) {
-          if (!route.didPop(result)) {
-            return false;
-          }
-          // Update the list of pages by setting _selectedPage to null
-          setState(() {
-            _selectedPage = null;
-          });
-          return true;
-        },
-      ),
+        ),
+        if (show404)
+          const MaterialPage(
+              key: ValueKey('UnknownPage'), child: UnknownScreen())
+        else if (_selectedPage != null)
+          PageDetailsPage(
+              page: _selectedPage!,
+              path: PageRoutePath(pages.indexOf(_selectedPage!), false))
+      ],
+      onPopPage: (route, result) {
+        if (!route.didPop(result)) {
+          return false;
+        }
+
+        // Update the list of pages by setting _selectedPage to null
+        _selectedPage = null;
+        show404 = false;
+        notifyListeners();
+
+        return true;
+      },
     );
+  }
+
+  @override
+  Future<void> setNewRoutePath(PageRoutePath configuration) async {
+    if (configuration.isUnknown) {
+      _selectedPage = null;
+      show404 = true;
+      return;
+    }
+
+    if (configuration.isDetailsPage) {
+      if (configuration.id! < 0 || configuration.id! > pages.length - 1) {
+        show404 = true;
+        return;
+      }
+
+      _selectedPage = pages[configuration.id!];
+    } else {
+      _selectedPage = null;
+    }
+
+    show404 = false;
+  }
+
+  @override
+  PageRoutePath get currentConfiguration {
+    if (show404) {
+      return PageRoutePath.unknown();
+    }
+
+    return _selectedPage == null
+        ? PageRoutePath.home()
+        : PageRoutePath.details(pages.indexOf(_selectedPage!));
+  }
+}
+
+class PageRouteInformationParser extends RouteInformationParser<PageRoutePath> {
+  @override
+  Future<PageRoutePath> parseRouteInformation(
+      RouteInformation routeInformation) async {
+    final uri = Uri.parse(routeInformation.location!);
+    // Handle '/'
+    if (uri.pathSegments.isEmpty) {
+      return PageRoutePath.home();
+    }
+
+    // Handle '/page/:id'
+    if (uri.pathSegments.length == 2) {
+      if (uri.pathSegments[0] != 'page') return PageRoutePath.unknown();
+      var remaining = uri.pathSegments[1];
+      var id = int.tryParse(remaining);
+      if (id == null) return PageRoutePath.unknown();
+      return PageRoutePath.details(id);
+    }
+
+    // Handle unknown routes
+    return PageRoutePath.unknown();
+  }
+
+  @override
+  RouteInformation? restoreRouteInformation(PageRoutePath configuration) {
+    if (configuration.isUnknown) {
+      return const RouteInformation(location: '/404');
+    }
+    if (configuration.isHomePage) {
+      return const RouteInformation(location: '/');
+    }
+    if (configuration.isDetailsPage) {
+      return RouteInformation(location: '/page/${configuration.id}');
+    }
+    return null;
   }
 }
 
@@ -108,7 +223,6 @@ class PagesListScreen extends StatelessWidget {
               title: Text(page.title),
               subtitle: Text(page.item),
               onTap: () {
-                print('onTapped : ${page.title}');
                 onTapped(page);
               },
             )
@@ -133,10 +247,12 @@ class UnknownScreen extends StatelessWidget {
 }
 
 class PageDetailsPage extends Page {
+  final PageRoutePath path;
   final PageList page;
 
   PageDetailsPage({
     required this.page,
+    required this.path,
   }) : super(key: ValueKey(page));
 
   @override
@@ -144,24 +260,31 @@ class PageDetailsPage extends Page {
     return MaterialPageRoute(
       settings: this,
       builder: (BuildContext context) {
-        return PageDetailsScreen(page: page);
+        return PageDetailsScreen(
+          page: page,
+          path: path,
+        );
       },
     );
   }
 }
 
 class PageDetailsScreen extends StatelessWidget {
+  final PageRoutePath path;
   final PageList page;
 
   const PageDetailsScreen({
     super.key,
+    required this.path,
     required this.page,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(path.id.toString()),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
