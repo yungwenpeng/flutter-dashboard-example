@@ -63,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
             actions: [
               IconButton(
                   icon: const Icon(Icons.logout),
+                  tooltip: AppLocalizations.of(context)!.drawerLogout,
                   onPressed: (() {
                     _clearUserInfo();
                     Navigator.pushNamedAndRemoveUntil(

@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../model/thingsboard_client_base_provider.dart';
 import 'drawer.dart';
+import 'device_details.dart';
 
 class MyDevicesPage extends StatefulWidget {
   const MyDevicesPage({super.key});
@@ -47,6 +48,7 @@ class _MyDevicesPageState extends State<MyDevicesPage> {
           actions: [
             IconButton(
                 icon: const Icon(Icons.logout),
+                tooltip: AppLocalizations.of(context)!.drawerLogout,
                 onPressed: (() {
                   _clearUserInfo();
                   Navigator.pushNamedAndRemoveUntil(
@@ -58,75 +60,96 @@ class _MyDevicesPageState extends State<MyDevicesPage> {
         body: ListView.builder(
           itemCount: tbClientBaseProvider.myDevices.length,
           itemBuilder: (context, index) {
-            String name = tbClientBaseProvider.myDevices.values
-                .toList(growable: true)[index]
-                .deviceName;
-            String id = tbClientBaseProvider.myDevices.values
-                .toList(growable: true)[index]
-                .deviceId;
+            var myDevices = tbClientBaseProvider.myDevices.values
+                .toList(growable: true)[index];
             return Card(
-                elevation: 0,
-                color: Colors
-                    .lightBlueAccent, //Color.fromARGB(195, 208, 227, 235),
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(color: Colors.white70, width: 3),
-                  borderRadius: BorderRadius.circular(5),
+              elevation: 0,
+              color:
+                  Colors.lightBlueAccent, //Color.fromARGB(195, 208, 227, 235),
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(color: Colors.white70, width: 3),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: ListTile(
+                leading: const Icon(
+                  Icons.devices,
+                  color: Colors.white,
+                  size: 30.0,
                 ),
-                child: ListTile(
-                  leading: const Icon(
-                    Icons.devices,
-                    color: Colors.white,
-                    size: 30.0,
-                  ),
-                  title: Text(
-                    name,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w600, color: Colors.black),
-                  ),
-                  subtitle: Text(id, maxLines: 1),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.more_vert),
-                    //color: Colors.white,
-                    tooltip: AppLocalizations.of(context)!.deviceDetails,
-                    onPressed: (() => showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: Text(name, textAlign: TextAlign.center),
-                            content: SingleChildScrollView(
-                                child: ListBody(children: [
-                              Text(
-                                  '${AppLocalizations.of(context)!.deviceId}: $id'),
-                              const SizedBox(height: 6.0),
-                              Text(
-                                  '${AppLocalizations.of(context)!.deviceCreateTime}: ${tbClientBaseProvider.myDevices.values.toList(growable: true)[index].deviceCreateTime}'),
-                              const SizedBox(height: 6.0),
-                              Text(
-                                  '${AppLocalizations.of(context)!.deviceLabel}: ${tbClientBaseProvider.myDevices.values.toList(growable: true)[index].deviceLabel}'),
-                              const SizedBox(height: 6.0),
-                              Text(
-                                  '${AppLocalizations.of(context)!.deviceFirmwareId}: ${tbClientBaseProvider.myDevices.values.toList(growable: true)[index].deviceFirmwareId}'),
-                              const SizedBox(height: 6.0),
-                              Text(
-                                  '${AppLocalizations.of(context)!.deviceSoftwareId}: ${tbClientBaseProvider.myDevices.values.toList(growable: true)[index].deviceSoftwareId}')
-                            ])),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('Ok'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                  color: Colors.white70, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                        )),
-                  ),
-                ));
+                title: Text(
+                  myDevices.deviceName,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, color: Colors.black),
+                ),
+                subtitle: Text(myDevices.deviceId, maxLines: 1),
+                trailing: IconButton(
+                  icon: const Icon(Icons.more_vert),
+                  //color: Colors.white,
+                  tooltip: AppLocalizations.of(context)!.deviceDetails,
+                  onPressed: (() {
+                    _showMaterialDialog(
+                        context,
+                        myDevices.deviceName,
+                        myDevices.deviceId,
+                        myDevices.deviceCreateTime,
+                        myDevices.deviceLabel,
+                        myDevices.deviceProfileName,
+                        myDevices.deviceFirmwareId,
+                        myDevices.deviceSoftwareId);
+                  }),
+                ),
+                onTap: () {
+                  tbClientBaseProvider.deviceId = myDevices.deviceId;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => const DeviceDetails())));
+                },
+              ),
+            );
           },
+        ),
+      ),
+    );
+  }
+
+  void _showMaterialDialog(BuildContext context, name, id, deviceCreateTime,
+      deviceLabel, deviceProfileName, deviceFirmwareId, deviceSoftwareId) {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        elevation: 0,
+        title: Text(name, textAlign: TextAlign.center),
+        content: SingleChildScrollView(
+          child: ListBody(children: [
+            Text('${AppLocalizations.of(context)!.deviceId}: $id'),
+            const SizedBox(height: 6.0),
+            Text(
+                '${AppLocalizations.of(context)!.deviceCreateTime}: $deviceCreateTime'),
+            const SizedBox(height: 6.0),
+            Text('${AppLocalizations.of(context)!.deviceLabel}: $deviceLabel'),
+            const SizedBox(height: 6.0),
+            Text(
+                '${AppLocalizations.of(context)!.deviceProfileName}: $deviceProfileName'),
+            const SizedBox(height: 6.0),
+            Text(
+                '${AppLocalizations.of(context)!.deviceFirmwareId}: $deviceFirmwareId'),
+            const SizedBox(height: 6.0),
+            Text(
+                '${AppLocalizations.of(context)!.deviceSoftwareId}: $deviceSoftwareId')
+          ]),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text(AppLocalizations.of(context)!.deviceAlertDialogConfirm),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(color: Colors.white70, width: 1),
+          borderRadius: BorderRadius.circular(15),
         ),
       ),
     );

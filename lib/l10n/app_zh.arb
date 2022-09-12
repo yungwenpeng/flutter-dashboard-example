@@ -13,6 +13,8 @@
     "deviceId": "設備ID",
     "deviceCreateTime": "建立時間",
     "deviceLabel": "設備標籤",
+    "deviceProfileName": "設備配置",
     "deviceFirmwareId": "指定的韌體ID",
-    "deviceSoftwareId": "指定的軟體ID"
+    "deviceSoftwareId": "指定的軟體ID",
+    "deviceAlertDialogConfirm": "確定"
 }

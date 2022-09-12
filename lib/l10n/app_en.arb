@@ -13,6 +13,8 @@
     "deviceId": "Id",
     "deviceCreateTime": "Create time",
     "deviceLabel": "Label",
+    "deviceProfileName": "Device Profile",
     "deviceFirmwareId": "Assigned firmware ID",
-    "deviceSoftwareId": "Assigned software ID"
+    "deviceSoftwareId": "Assigned software ID",
+    "deviceAlertDialogConfirm": "Ok"
 }

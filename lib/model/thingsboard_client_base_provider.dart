@@ -8,6 +8,8 @@ import 'device.dart';
 class ThingsBoardClientBaseProvider with ChangeNotifier {
   late final ThingsboardClient tbClient;
   var myDevices = <String, MyThingsBoardDevice>{};
+  String? deviceId;
+  late TelemetrySubscriber telemetrySubscriber;
 
   Future<bool> init() async {
     var storage = ThingsBoardSecureStorage();
@@ -50,11 +52,59 @@ class ThingsBoardClientBaseProvider with ChangeNotifier {
             device.label!,
             assignedFirmwareName.toString(),
             assignedSoftwareName.toString(),
-            createTime.toString());
+            createTime.toString(),
+            device.deviceProfileName.toString(),
+            '-', // temperature
+            '-' // humidity
+            );
       }
       pageLink = pageLink.nextPageLink();
     } while (devices.hasNext);
 
     notifyListeners();
+  }
+
+  Future<void> entityDataQueryWithTimeseriesSubscription() async {
+    var entityList = <String>[];
+    entityList.add(deviceId!);
+    var entityFilter =
+        EntityListFilter(entityType: EntityType.DEVICE, entityList: entityList);
+    var deviceTelemetry = <EntityKey>[
+      EntityKey(type: EntityKeyType.TIME_SERIES, key: 'temperature'),
+      EntityKey(type: EntityKeyType.TIME_SERIES, key: 'humidity')
+    ];
+    var devicesQuery = EntityDataQuery(
+      entityFilter: entityFilter,
+      latestValues: deviceTelemetry,
+      pageLink: EntityDataPageLink(pageSize: 20),
+    );
+    var currentTime = DateTime.now().millisecondsSinceEpoch;
+    var timeWindow = const Duration(hours: 1).inMilliseconds;
+    var tsCmd = TimeSeriesCmd(
+        keys: ['temperature', 'humidity'],
+        startTs: currentTime - timeWindow,
+        timeWindow: timeWindow);
+
+    var cmd = EntityDataCmd(query: devicesQuery, tsCmd: tsCmd);
+
+    var telemetryService = tbClient.getTelemetryService();
+
+    telemetrySubscriber = TelemetrySubscriber(telemetryService, [cmd]);
+
+    telemetrySubscriber.entityDataStream.listen((entityDataUpdate) {
+      //print('Received entity data update: $entityDataUpdate');
+      var update = entityDataUpdate.update;
+      if (update != null) {
+        if (update[0].timeseries['temperature'] != null) {
+          myDevices[deviceId]!.temperature =
+              update[0].timeseries['temperature']![0].value!;
+        }
+        if (update[0].timeseries['humidity'] != null) {
+          myDevices[deviceId]!.humidity =
+              update[0].timeseries['humidity']![0].value!;
+        }
+      }
+      notifyListeners();
+    });
   }
 }
