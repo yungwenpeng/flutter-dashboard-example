@@ -1,3 +1,5 @@
+import 'package:thingsboard_app/model/linechart_telemetry_data.dart';
+
 class MyThingsBoardDevice {
   String deviceName;
   String deviceId;
@@ -8,6 +10,8 @@ class MyThingsBoardDevice {
   String deviceProfileName;
   String temperature;
   String humidity;
+  var lcTemperatureData = <LineChartTelemetryData>[];
+  var lcHumidityData = <LineChartTelemetryData>[];
 
   MyThingsBoardDevice(
       this.deviceId,

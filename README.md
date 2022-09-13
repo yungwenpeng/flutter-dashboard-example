@@ -19,5 +19,7 @@ Introduction to localizations in Flutter: view [internationalization](https://do
   
 Thingsboard Dart API Client can be found [here](https://thingsboard.io/docs/reference/dart-client/).  
 
+[Syncfusion Flutter Chart widget](https://help.syncfusion.com/flutter/cartesian-charts/chart-types/line-chart)  
+
 ## Demo:  
 ![flutter-dashboard-example](flutter_example.gif)  
