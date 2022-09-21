@@ -1,4 +1,4 @@
-import 'package:thingsboard_app/model/linechart_telemetry_data.dart';
+import 'linechart_telemetry_data.dart';
 
 class MyThingsBoardDevice {
   String deviceName;

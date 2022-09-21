@@ -3,7 +3,7 @@
     "homeAppBarTitle": "Demo HomePage",
     "loginAppBarTitle": "Login",
     "deviceAppBarTitle": "Device list",
-    "drawerHome": "­Home",
+    "drawerHome": "Home",
     "drawerDevice": "Device",
     "drawerDashboard": "Dashboard",
     "drawerLogout": "Logout",

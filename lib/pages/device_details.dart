@@ -7,7 +7,14 @@ import '../model/thingsboard_client_base_provider.dart';
 import '../model/linechart_telemetry_data.dart';
 
 class DeviceDetails extends StatefulWidget {
-  const DeviceDetails({super.key});
+  final VoidCallback onLogout;
+  final VoidCallback onDeviceList;
+  final VoidCallback onDeviceDetails;
+  const DeviceDetails(
+      {super.key,
+      required this.onLogout,
+      required this.onDeviceList,
+      required this.onDeviceDetails});
 
   @override
   State<DeviceDetails> createState() => _DeviceDetailsState();

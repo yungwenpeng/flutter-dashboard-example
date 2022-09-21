@@ -10,7 +10,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../model/thingsboard_client_base_provider.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  final VoidCallback onLogin;
+
+  const Login({Key? key, required this.onLogin}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
@@ -84,10 +86,10 @@ class _LoginState extends State<Login> {
       try {
         await tbClient.login(
             LoginRequest(usernameController.text, passwordController.text));
-        // ignore: use_build_context_synchronously
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/home', ModalRoute.withName('/home'));
-      } catch (e) {
+        widget.onLogin();
+      } catch (e, s) {
+        //print('Error: $e');
+        //print('Stack: $s');
         showInSnackBar('Invalid username or password');
       }
     }
@@ -224,9 +226,9 @@ class _LoginState extends State<Login> {
             value.length < 8) {
           return 'Minimum character length is 8';
         } else if (value != null &&
-            hintText == "Username" &&
+            hintText == "Username(email)" &&
             !value.contains("@")) {
-          return 'Username need @ character';
+          return 'Username(email) need @ character';
         } else {
           return null;
         }

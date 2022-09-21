@@ -3,9 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../model/thingsboard_client_base_provider.dart';
+import '../model/router_delegate.dart';
+import 'login.dart';
+import 'home.dart';
 
 class MyDrawer extends StatefulWidget {
-  const MyDrawer({super.key});
+  final VoidCallback onLogout;
+  final VoidCallback onDeviceList;
+  const MyDrawer(
+      {super.key, required this.onLogout, required this.onDeviceList});
 
   @override
   State<MyDrawer> createState() => _MyDrawerState();
@@ -84,19 +90,33 @@ class _MyDrawerState extends State<MyDrawer> {
     });
     switch (index) {
       case 0:
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/home', ModalRoute.withName('/home'));
+        MyAppRouterDelegate().loggedIn = true;
+        MyAppRouterDelegate().deviceListIn = null;
+        MyAppRouterDelegate().deviceDetailsIn = null;
+        Navigator.maybePop(context);
+
         break;
       case 1:
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/devices', ModalRoute.withName('/devices'));
+        widget.onDeviceList();
+        MyAppRouterDelegate().loggedIn = true;
+        MyAppRouterDelegate().deviceDetailsIn = null;
         break;
       case 2:
         break;
       case 3:
         _clearUserInfo();
+        widget.onLogout();
         Navigator.pushNamedAndRemoveUntil(
             context, '/login', ModalRoute.withName('/login'));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Login(
+                      onLogin: () {
+                        MyAppRouterDelegate().loggedIn = false;
+                        MyAppRouterDelegate().deviceListIn = false;
+                      },
+                    )));
         break;
     }
   }
@@ -124,7 +144,10 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
           ),
           selected: isSelected,
-          onTap: () => selectDestination(index),
+          onTap: () {
+            Navigator.maybePop(context);
+            selectDestination(index);
+          },
         ));
   }
 }

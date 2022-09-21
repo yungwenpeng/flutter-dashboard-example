@@ -6,7 +6,10 @@ import '../model/thingsboard_client_base_provider.dart';
 import 'drawer.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  final VoidCallback onLogout;
+  final VoidCallback onDeviceList;
+  const MyHomePage(
+      {super.key, required this.onLogout, required this.onDeviceList});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -36,7 +39,9 @@ class _MyHomePageState extends State<MyHomePage> {
     var tbClient = tbClientBaseProvider.tbClient;
     _username = tbClient.getAuthUser()?.sub;
     setState(() {
-      _username = _username!.substring(0, _username?.indexOf('@'));
+      _username = _username != null
+          ? _username!.substring(0, _username?.indexOf('@'))
+          : null;
     });
   }
 
@@ -66,12 +71,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   tooltip: AppLocalizations.of(context)!.drawerLogout,
                   onPressed: (() {
                     _clearUserInfo();
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/login', ModalRoute.withName('/login'));
+                    widget.onLogout();
                   })),
             ],
           ),
-          drawer: const MyDrawer(),
+          drawer: MyDrawer(
+            onLogout: () => widget.onLogout(),
+            onDeviceList: () => widget.onDeviceList(),
+          ),
           body: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),

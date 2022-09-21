@@ -1,15 +1,10 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-import 'landing.dart';
-import 'pages/home.dart';
-import 'pages/login.dart';
-import 'pages/device_list.dart';
+import 'model/router_delegate.dart';
 import 'model/thingsboard_client_base_provider.dart';
 
 Future<void> main() async {
@@ -20,8 +15,21 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late MyAppRouterDelegate _delegate;
+
+  @override
+  void initState() {
+    super.initState();
+    _delegate = MyAppRouterDelegate();
+  }
 
   // This widget is the root of your application.
   @override
@@ -42,12 +50,10 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        routes: {
-          '/': (context) => Landing(),
-          '/home': (context) => MyHomePage(),
-          '/login': (context) => Login(),
-          '/devices': (context) => MyDevicesPage(),
-        },
+        home: Router(
+          routerDelegate: _delegate,
+          backButtonDispatcher: RootBackButtonDispatcher(),
+        ),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),

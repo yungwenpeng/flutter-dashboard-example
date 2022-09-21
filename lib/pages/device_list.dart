@@ -4,10 +4,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../model/thingsboard_client_base_provider.dart';
 import 'drawer.dart';
-import 'device_details.dart';
 
 class MyDevicesPage extends StatefulWidget {
-  const MyDevicesPage({super.key});
+  final VoidCallback onLogout;
+  final VoidCallback onDeviceList;
+  final VoidCallback onDeviceDetails;
+  const MyDevicesPage(
+      {super.key,
+      required this.onLogout,
+      required this.onDeviceList,
+      required this.onDeviceDetails});
 
   @override
   State<MyDevicesPage> createState() => _MyDevicesPageState();
@@ -51,12 +57,14 @@ class _MyDevicesPageState extends State<MyDevicesPage> {
                 tooltip: AppLocalizations.of(context)!.drawerLogout,
                 onPressed: (() {
                   _clearUserInfo();
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/login', ModalRoute.withName('/login'));
+                  widget.onLogout();
                 })),
           ],
         ),
-        drawer: const MyDrawer(),
+        drawer: MyDrawer(
+          onLogout: () => widget.onLogout(),
+          onDeviceList: () => widget.onDeviceList(),
+        ),
         body: ListView.builder(
           itemCount: tbClientBaseProvider.myDevices.length,
           itemBuilder: (context, index) {
@@ -100,10 +108,7 @@ class _MyDevicesPageState extends State<MyDevicesPage> {
                 ),
                 onTap: () {
                   tbClientBaseProvider.deviceId = myDevices.deviceId;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const DeviceDetails())));
+                  widget.onDeviceDetails();
                 },
               ),
             );

@@ -1,9 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'model/thingsboard_client_base_provider.dart';
 
 class Landing extends StatefulWidget {
   const Landing({Key? key}) : super(key: key);
@@ -17,23 +14,6 @@ class _LandingState extends State<Landing> {
   @override
   void initState() {
     super.initState();
-    _loadUserInfo();
-  }
-
-  _loadUserInfo() async {
-    final tbClientBaseProvider =
-        Provider.of<ThingsBoardClientBaseProvider>(context, listen: false);
-    tbClientBaseProvider.init().then((isAuthenticated) {
-      if (isAuthenticated) {
-        // Don't want to give the user the ability to navigate back to the landing
-        // screen from either login or home screen.
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/home', ModalRoute.withName('/home'));
-      } else {
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/login', ModalRoute.withName('/login'));
-      }
-    });
   }
 
   @override
@@ -41,6 +21,17 @@ class _LandingState extends State<Landing> {
     // CircularProgressIndicator :
     // for both determinate and indeterminate progresses
     // a material widget which indicates that the application is busy.
-    return Scaffold(body: Center(child: CircularProgressIndicator()));
+    return Container(
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+          alignment: Alignment.center,
+          image: AssetImage('assets/images/welcome_bg.png'),
+          fit: BoxFit.fill,
+        )),
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: CircularProgressIndicator(),
+            )));
   }
 }
