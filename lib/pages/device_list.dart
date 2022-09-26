@@ -9,11 +9,14 @@ class MyDevicesPage extends StatefulWidget {
   final VoidCallback onLogout;
   final VoidCallback onDeviceList;
   final VoidCallback onDeviceDetails;
-  const MyDevicesPage(
-      {super.key,
-      required this.onLogout,
-      required this.onDeviceList,
-      required this.onDeviceDetails});
+  final Function(String) selectedDeviceId;
+  const MyDevicesPage({
+    super.key,
+    required this.onLogout,
+    required this.onDeviceList,
+    required this.onDeviceDetails,
+    required this.selectedDeviceId,
+  });
 
   @override
   State<MyDevicesPage> createState() => _MyDevicesPageState();
@@ -108,6 +111,7 @@ class _MyDevicesPageState extends State<MyDevicesPage> {
                 ),
                 onTap: () {
                   tbClientBaseProvider.deviceId = myDevices.deviceId;
+                  widget.selectedDeviceId(myDevices.deviceId);
                   widget.onDeviceDetails();
                 },
               ),

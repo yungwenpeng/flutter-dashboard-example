@@ -54,10 +54,13 @@ class DeviceListPage extends Page {
   final VoidCallback onLogout;
   final VoidCallback onDeviceList;
   final VoidCallback onDeviceDetails;
+  final Function(String) selectedDeviceId;
+
   const DeviceListPage(
       {required this.onLogout,
       required this.onDeviceList,
-      required this.onDeviceDetails})
+      required this.onDeviceDetails,
+      required this.selectedDeviceId})
       : super(key: const ValueKey('DeviceListPage'));
 
   @override
@@ -65,10 +68,10 @@ class DeviceListPage extends Page {
     return MaterialPageRoute(
       settings: this,
       builder: (BuildContext context) => MyDevicesPage(
-        onLogout: onLogout,
-        onDeviceList: onDeviceList,
-        onDeviceDetails: onDeviceDetails,
-      ),
+          onLogout: onLogout,
+          onDeviceList: onDeviceList,
+          onDeviceDetails: onDeviceDetails,
+          selectedDeviceId: selectedDeviceId),
     );
   }
 }
@@ -77,10 +80,12 @@ class DeviceDetailsPage extends Page {
   final VoidCallback onLogout;
   final VoidCallback onDeviceList;
   final VoidCallback onDeviceDetails;
+  final String selectedDeviceId;
   const DeviceDetailsPage(
       {required this.onLogout,
       required this.onDeviceList,
-      required this.onDeviceDetails})
+      required this.onDeviceDetails,
+      required this.selectedDeviceId})
       : super(key: const ValueKey('DeviceDetailsPage'));
 
   @override
@@ -90,7 +95,8 @@ class DeviceDetailsPage extends Page {
       builder: (BuildContext context) => DeviceDetails(
           onLogout: onLogout,
           onDeviceList: onDeviceList,
-          onDeviceDetails: onDeviceDetails),
+          onDeviceDetails: onDeviceDetails,
+          selectedDeviceId: selectedDeviceId),
     );
   }
 }

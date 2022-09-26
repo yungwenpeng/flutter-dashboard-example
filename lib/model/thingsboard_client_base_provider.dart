@@ -65,6 +65,29 @@ class ThingsBoardClientBaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<Device?> getDevice(String deviceId) async {
+    if (myDevices.isEmpty) {
+      var foundDevice =
+          await tbClient.getDeviceService().getDeviceInfo(deviceId);
+      myDevices[deviceId] = MyThingsBoardDevice(
+          deviceId,
+          foundDevice!.getName(),
+          foundDevice.label!,
+          foundDevice.getFirmwareId() != null
+              ? foundDevice.getFirmwareId()!.id!
+              : '',
+          foundDevice.getSoftwareId() != null
+              ? foundDevice.getSoftwareId()!.id!
+              : '',
+          DateTime.fromMillisecondsSinceEpoch(foundDevice.createdTime!)
+              .toString(),
+          foundDevice.deviceProfileName!.toString(),
+          '-',
+          '-');
+    }
+    return null;
+  }
+
   Future<void> entityDataQueryWithTimeseriesSubscription() async {
     var entityList = <String>[];
     if (deviceId == '') {

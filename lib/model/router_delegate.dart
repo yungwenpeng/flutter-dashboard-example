@@ -3,13 +3,32 @@ import 'package:provider/provider.dart';
 
 import 'thingsboard_client_base_provider.dart';
 import 'pages.dart';
+import 'route_configuration.dart';
 
-class MyAppRouterDelegate extends RouterDelegate
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin {
+class MyAppRouterDelegate extends RouterDelegate<MyAppRouteConfiguration>
+    with
+        ChangeNotifier,
+        PopNavigatorRouterDelegateMixin<MyAppRouteConfiguration> {
+  bool? _show404;
+  bool? get show404 => _show404;
+  set show404(bool? value) {
+    _show404 = value;
+    if (value == true) {
+      deviceListIn = null;
+      deviceDetailsIn = null;
+      selectedDeviceId = null;
+    }
+    notifyListeners();
+  }
+
   bool? _loggedIn;
   bool? get loggedIn => _loggedIn;
 
   set loggedIn(value) {
+    if (_loggedIn == true && value == false) {
+      // It is a logout!
+      _clear();
+    }
     _loggedIn = value;
     notifyListeners();
   }
@@ -28,6 +47,13 @@ class MyAppRouterDelegate extends RouterDelegate
     notifyListeners();
   }
 
+  String? _selectedDeviceId;
+  String? get selectedDeviceId => _selectedDeviceId;
+  set selectedDeviceId(String? value) {
+    _selectedDeviceId = value;
+    notifyListeners();
+  }
+
   late GlobalKey<NavigatorState> _navigatorKey;
 
   @override
@@ -42,7 +68,7 @@ class MyAppRouterDelegate extends RouterDelegate
     List<Page> stack;
     final tbClientBaseProvider =
         Provider.of<ThingsBoardClientBaseProvider>(context, listen: false);
-    if (_loggedIn == null) {
+    if (_loggedIn == null && show404 == null) {
       tbClientBaseProvider.init().then((isAuthenticated) {
         isAuthenticated ? loggedIn = true : loggedIn = false;
       });
@@ -74,6 +100,7 @@ class MyAppRouterDelegate extends RouterDelegate
           deviceListIn = null;
         }
         deviceDetailsIn = null;
+        selectedDeviceId = null;
         return true;
       },
     );
@@ -90,9 +117,9 @@ class MyAppRouterDelegate extends RouterDelegate
       ];
 
   List<Page> get _loggedInStack {
+    final selectedDeviceId = this.selectedDeviceId;
     onLogout() {
       loggedIn = false;
-      deviceListIn = null;
       _clear();
     }
 
@@ -111,21 +138,68 @@ class MyAppRouterDelegate extends RouterDelegate
           DeviceListPage(
               onLogout: onLogout,
               onDeviceList: onDeviceList,
-              onDeviceDetails: onDeviceDetails),
+              onDeviceDetails: onDeviceDetails,
+              selectedDeviceId: (String selectedDeviceId) {
+                this.selectedDeviceId = selectedDeviceId;
+              }),
       if (deviceListIn != null && deviceDetailsIn != null)
         if (deviceDetailsIn!)
           DeviceDetailsPage(
               onLogout: onLogout,
               onDeviceList: onDeviceList,
-              onDeviceDetails: onDeviceDetails),
+              onDeviceDetails: onDeviceDetails,
+              selectedDeviceId: selectedDeviceId!),
     ];
   }
 
   _clear() {
+    show404 = null;
     deviceListIn = null;
     deviceDetailsIn = null;
+    selectedDeviceId = null;
   }
 
   @override
-  Future<void> setNewRoutePath(configuration) async {/* Do Nothing */}
+  MyAppRouteConfiguration? get currentConfiguration {
+    if (loggedIn == null) {
+      return MyAppRouteConfiguration.landing();
+    } else if (loggedIn == false) {
+      return MyAppRouteConfiguration.login();
+    } else if (show404 == true) {
+      return MyAppRouteConfiguration.unKnow();
+    } else if (deviceListIn == null) {
+      return MyAppRouteConfiguration.home();
+    } else if (deviceDetailsIn == null && deviceListIn == true) {
+      return MyAppRouteConfiguration.deviceList();
+    } else if (deviceDetailsIn == true && deviceListIn == true) {
+      return MyAppRouteConfiguration.deviceDetails(selectedDeviceId);
+    } else {
+      return null;
+    }
+  }
+  @override
+  Future<void> setNewRoutePath(MyAppRouteConfiguration configuration) async {
+    if (configuration.unknown) {
+      show404 = true;
+    } else if (configuration.isLanding ||
+        configuration.isHomePage ||
+        configuration.isLoginPage) {
+      show404 = false;
+      deviceListIn = null;
+      deviceDetailsIn = null;
+      selectedDeviceId = null;
+    } else if (configuration.isDeviceListPage) {
+      show404 = false;
+      deviceListIn = true;
+      deviceDetailsIn = null;
+      selectedDeviceId = null;
+    } else if (configuration.isDeviceDetailsPage) {
+      show404 = false;
+      deviceListIn = true;
+      deviceDetailsIn = true;
+      selectedDeviceId = configuration.deviceId;
+    } else {
+      print('Could not set new route');
+    }
+  }
 }

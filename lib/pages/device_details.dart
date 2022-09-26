@@ -10,11 +10,13 @@ class DeviceDetails extends StatefulWidget {
   final VoidCallback onLogout;
   final VoidCallback onDeviceList;
   final VoidCallback onDeviceDetails;
+  final String selectedDeviceId;
   const DeviceDetails(
       {super.key,
       required this.onLogout,
       required this.onDeviceList,
-      required this.onDeviceDetails});
+      required this.onDeviceDetails,
+      required this.selectedDeviceId});
 
   @override
   State<DeviceDetails> createState() => _DeviceDetailsState();
@@ -25,6 +27,15 @@ class _DeviceDetailsState extends State<DeviceDetails>
   late ThingsBoardClientBaseProvider tbClientBaseProvider;
   late TelemetrySubscriber telemetrySubscriber;
   bool isSubscribed = false;
+
+  void getDeviceInfo() async {
+    var tbClientBaseProvider =
+        Provider.of<ThingsBoardClientBaseProvider>(context, listen: false);
+    var tbClient = tbClientBaseProvider.tbClient;
+    await tbClient
+        .getDeviceService()
+        .getDeviceInfo(tbClientBaseProvider.deviceId!);
+  }
 
   void deviceTimeseriesSubscription() {
     tbClientBaseProvider.entityDataQueryWithTimeseriesSubscription();
@@ -51,11 +62,18 @@ class _DeviceDetailsState extends State<DeviceDetails>
 
     WidgetsBinding.instance.addObserver(this);
 
-    tbClientBaseProvider.myDevices[tbClientBaseProvider.deviceId]!.temperature =
-        '-';
-    tbClientBaseProvider.myDevices[tbClientBaseProvider.deviceId]!.humidity =
-        '-';
-    deviceTimeseriesSubscription();
+    if (tbClientBaseProvider.deviceId == null) {
+      tbClientBaseProvider.deviceId = widget.selectedDeviceId;
+      tbClientBaseProvider.getDevice(widget.selectedDeviceId);
+    } else {
+      tbClientBaseProvider
+          .myDevices[tbClientBaseProvider.deviceId]!.temperature = '-';
+      tbClientBaseProvider.myDevices[tbClientBaseProvider.deviceId]!.humidity =
+          '-';
+    }
+    if (tbClientBaseProvider.myDevices.isNotEmpty) {
+      deviceTimeseriesSubscription();
+    }
   }
 
   @override
@@ -80,6 +98,12 @@ class _DeviceDetailsState extends State<DeviceDetails>
   Widget build(BuildContext context) {
     final tbClientBaseProvider =
         Provider.of<ThingsBoardClientBaseProvider>(context);
+    if (tbClientBaseProvider.myDevices.isEmpty) {
+      return _showCircularProgressIndicator(context);
+    } else if (!isSubscribed) {
+      deviceTimeseriesSubscription();
+      return _showCircularProgressIndicator(context);
+    }
     var deviceDetails =
         tbClientBaseProvider.myDevices[tbClientBaseProvider.deviceId];
     var temperature = deviceDetails!.temperature;
@@ -207,5 +231,20 @@ class _DeviceDetailsState extends State<DeviceDetails>
         ),
       ),
     );
+  }
+
+  Widget _showCircularProgressIndicator(BuildContext context) {
+    return Container(
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+          alignment: Alignment.center,
+          image: AssetImage('assets/images/welcome_bg.png'),
+          fit: BoxFit.fill,
+        )),
+        child: const Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: CircularProgressIndicator(),
+            )));
   }
 }

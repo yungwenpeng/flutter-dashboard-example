@@ -6,6 +6,7 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'model/router_delegate.dart';
 import 'model/thingsboard_client_base_provider.dart';
+import 'model/route_information_parser.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: '.env');
@@ -23,12 +24,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late MyAppRouterDelegate _delegate;
+  late MyAppRouterDelegate delegate;
+  late MyAppRouteInformationParser parser;
 
   @override
   void initState() {
     super.initState();
-    _delegate = MyAppRouterDelegate();
+    delegate = MyAppRouterDelegate();
+    parser = MyAppRouteInformationParser();
   }
 
   // This widget is the root of your application.
@@ -36,7 +39,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ThingsBoardClientBaseProvider>(
       create: (context) => ThingsBoardClientBaseProvider(),
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'Flutter Demo',
         theme: ThemeData(
           // This is the theme of your application.
@@ -50,10 +53,9 @@ class _MyAppState extends State<MyApp> {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: Router(
-          routerDelegate: _delegate,
-          backButtonDispatcher: RootBackButtonDispatcher(),
-        ),
+        routerDelegate: delegate,
+        routeInformationParser: parser,
+        backButtonDispatcher: RootBackButtonDispatcher(),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),

@@ -5,7 +5,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../model/thingsboard_client_base_provider.dart';
 import '../model/router_delegate.dart';
 import 'login.dart';
-import 'home.dart';
 
 class MyDrawer extends StatefulWidget {
   final VoidCallback onLogout;
@@ -106,8 +105,6 @@ class _MyDrawerState extends State<MyDrawer> {
       case 3:
         _clearUserInfo();
         widget.onLogout();
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/login', ModalRoute.withName('/login'));
         Navigator.push(
             context,
             MaterialPageRoute(
