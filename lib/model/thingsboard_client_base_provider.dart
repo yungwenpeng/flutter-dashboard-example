@@ -20,7 +20,7 @@ class ThingsBoardClientBaseProvider with ChangeNotifier {
   }
 
   Future<void> getDevices() async {
-    var pageLink = PageLink(10);
+    var pageLink = PageLink(100);
 
     PageData<DeviceInfo> devices;
 
@@ -29,7 +29,7 @@ class ThingsBoardClientBaseProvider with ChangeNotifier {
       devices = tbClient.isTenantAdmin()
           ? await tbClient.getDeviceService().getTenantDeviceInfos(pageLink)
           : await tbClient.getDeviceService().getCustomerDeviceInfos(
-              tbClient.getAuthUser()!.customerId!, pageLink);
+              tbClient.getAuthUser()!.customerId, pageLink);
       for (var device in devices.data) {
         var firmwareId =
             device.getFirmwareId() != null ? (device.getFirmwareId()!.id!) : '';
@@ -42,7 +42,7 @@ class ThingsBoardClientBaseProvider with ChangeNotifier {
                 .getOtaPackageService()
                 .getOtaPackageInfo(firmwareId))
             : '';
-        var assignedSoftwareName = firmwareId != ''
+        var assignedSoftwareName = softwareId != ''
             ? (await tbClient
                 .getOtaPackageService()
                 .getOtaPackageInfo(softwareId))
@@ -50,7 +50,7 @@ class ThingsBoardClientBaseProvider with ChangeNotifier {
         myDevices[device.getId()!.id!] = MyThingsBoardDevice(
             device.getId()!.id!,
             device.getName(),
-            device.label!,
+            device.label == null ? '' : device.label!,
             assignedFirmwareName.toString(),
             assignedSoftwareName.toString(),
             createTime.toString(),

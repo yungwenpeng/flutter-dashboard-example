@@ -199,7 +199,7 @@ class MyAppRouterDelegate extends RouterDelegate<MyAppRouteConfiguration>
       deviceDetailsIn = true;
       selectedDeviceId = configuration.deviceId;
     } else {
-      print('Could not set new route');
+      print('setNewRoutePath: Could not set new route');
     }
   }
 }

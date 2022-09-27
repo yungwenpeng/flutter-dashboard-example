@@ -43,6 +43,9 @@ class _MyDevicesPageState extends State<MyDevicesPage> {
   Widget build(BuildContext context) {
     final tbClientBaseProvider =
         Provider.of<ThingsBoardClientBaseProvider>(context);
+    if (tbClientBaseProvider.myDevices.isEmpty) {
+      return _showCircularProgressIndicator(context);
+    }
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
@@ -162,5 +165,20 @@ class _MyDevicesPageState extends State<MyDevicesPage> {
         ),
       ),
     );
+  }
+
+  Widget _showCircularProgressIndicator(BuildContext context) {
+    return Container(
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+          alignment: Alignment.center,
+          image: AssetImage('assets/images/welcome_bg.png'),
+          fit: BoxFit.fill,
+        )),
+        child: const Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: CircularProgressIndicator(),
+            )));
   }
 }
