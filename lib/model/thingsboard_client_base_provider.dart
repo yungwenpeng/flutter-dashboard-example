@@ -29,7 +29,7 @@ class ThingsBoardClientBaseProvider with ChangeNotifier {
       devices = tbClient.isTenantAdmin()
           ? await tbClient.getDeviceService().getTenantDeviceInfos(pageLink)
           : await tbClient.getDeviceService().getCustomerDeviceInfos(
-              tbClient.getAuthUser()!.customerId, pageLink);
+              tbClient.getAuthUser()!.customerId!, pageLink);
       for (var device in devices.data) {
         var firmwareId =
             device.getFirmwareId() != null ? (device.getFirmwareId()!.id!) : '';
