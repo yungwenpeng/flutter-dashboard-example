@@ -1,10 +1,6 @@
-// ignore_for_file: prefer_const_constructors, unused_import
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:thingsboard_client/thingsboard_client.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Login extends StatefulWidget {
@@ -25,7 +21,7 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   bool _isHidden = true;
 
   @override
@@ -65,7 +61,7 @@ class _LoginState extends State<Login> {
           value,
           textAlign: TextAlign.center,
         ),
-        duration: Duration(milliseconds: 2000),
+        duration: const Duration(milliseconds: 2000),
         backgroundColor: Colors.redAccent,
       ),
     );
@@ -99,7 +95,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           image: DecorationImage(
         alignment: Alignment.center,
         image: AssetImage('assets/images/welcome_bg.png'),
@@ -116,14 +112,14 @@ class _LoginState extends State<Login> {
             key: _formKey,
             child: Card(
               elevation: 0,
-              color: Color.fromARGB(195, 255, 255, 255),
+              color: const Color.fromARGB(195, 255, 255, 255),
               margin: const EdgeInsets.fromLTRB(20, 60, 20, 20), // L,T,R,B
               shape: RoundedRectangleBorder(
-                side: BorderSide(color: Colors.white70, width: 1),
+                side: const BorderSide(color: Colors.white70, width: 1),
                 borderRadius: BorderRadius.circular(15),
               ),
               child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -135,13 +131,11 @@ class _LoginState extends State<Login> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     buildTextField('Username(email)'),
-                    SizedBox(
-                      height: 20.0,
-                    ),
+                    const SizedBox(height: 20.0),
                     buildTextField('Password'),
-                    SizedBox(height: 10.0),
+                    const SizedBox(height: 10.0),
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         // Foreground color
@@ -160,7 +154,7 @@ class _LoginState extends State<Login> {
                       onPressed: () {
                         _loginSubmitted(); // Respond to button press
                       },
-                      icon: Icon(Icons.login, size: 20),
+                      icon: const Icon(Icons.login, size: 20),
                       label:
                           Text(AppLocalizations.of(context)!.loginAppBarTitle),
                     ),
@@ -184,8 +178,9 @@ class _LoginState extends State<Login> {
       decoration: InputDecoration(
         hintText: 'Enter $hintText',
         hintStyle: TextStyle(color: Colors.blueGrey[400]),
-        prefixIcon:
-            hintText == "Password" ? Icon(Icons.lock) : Icon(Icons.account_box),
+        prefixIcon: hintText == "Password"
+            ? const Icon(Icons.lock)
+            : const Icon(Icons.account_box),
         labelText: hintText,
         labelStyle: TextStyle(
           color: Colors.grey[600],
@@ -202,8 +197,8 @@ class _LoginState extends State<Login> {
             ? IconButton(
                 onPressed: _toggleVisibility,
                 icon: _isHidden
-                    ? Icon(Icons.visibility_off)
-                    : Icon(Icons.visibility),
+                    ? const Icon(Icons.visibility_off)
+                    : const Icon(Icons.visibility),
               )
             : null,
         counterText: hintText == "Password"

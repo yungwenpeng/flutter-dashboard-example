@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Landing extends StatefulWidget {
   const Landing({Key? key}) : super(key: key);
@@ -36,9 +37,25 @@ class _LandingState extends State<Landing> {
 
   @override
   Widget build(BuildContext context) {
-    // CircularProgressIndicator :
-    // for both determinate and indeterminate progresses
-    // a material widget which indicates that the application is busy.
-    return Scaffold(body: Center(child: CircularProgressIndicator()));
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      persistentFooterAlignment: AlignmentDirectional.center,
+      body: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const CircularProgressIndicator(),
+          const Padding(padding: EdgeInsets.all(5.0)),
+          Text(
+            AppLocalizations.of(context)!.loadingText,
+            style: const TextStyle(
+              fontSize: 24.0,
+              color: Colors.white,
+              fontWeight: FontWeight.w400,
+            ),
+          )
+        ],
+      )),
+    );
   }
 }

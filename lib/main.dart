@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -38,9 +36,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       routes: {
-        '/': (context) => Landing(),
-        '/home': (context) => MyHomePage(),
-        '/login': (context) => Login(),
+        '/': (context) => const Landing(),
+        '/home': (context) => const MyHomePage(),
+        '/login': (context) => const Login(),
       },
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

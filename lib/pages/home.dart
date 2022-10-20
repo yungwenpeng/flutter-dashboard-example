@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -15,7 +13,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   int _selectedDestination = 0;
   String? _username;
 
@@ -44,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             image: DecorationImage(
           alignment: Alignment.center,
           image: AssetImage('assets/images/welcome_bg.png'),
@@ -56,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.homeAppBarTitle),
             leading: IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 scaffoldKey.currentState?.openDrawer();
               },
@@ -69,7 +67,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.transparent.withOpacity(.4),
                 image: DecorationImage(
                     alignment: Alignment.center,
-                    image: AssetImage("assets/images/navigation_drawer_bg.png"),
+                    image: const AssetImage(
+                        "assets/images/navigation_drawer_bg.png"),
                     fit: BoxFit.fill,
                     colorFilter: ColorFilter.mode(
                         Colors.black.withOpacity(.4), BlendMode.multiply)),
@@ -77,17 +76,17 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ListView(
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: Text(
                       'Hi $_username,',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20.0,
                         color: Colors.white,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
-                  Divider(
+                  const Divider(
                     height: 2,
                     thickness: 2,
                     color: Colors.white,
@@ -106,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+              padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -121,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     Text(
                       dotenv.env['API_URL'] ?? 'API_URL not found',
-                      style: TextStyle(color: Colors.purpleAccent),
+                      style: const TextStyle(color: Colors.purpleAccent),
                     )
                   ],
                 ),

@@ -1,4 +1,5 @@
 {
+    "loadingText": "Loading",
     "welcomeHomePage": "Welcome to Demo Homepage!",
     "homeAppBarTitle": "Demo HomePage",
     "loginAppBarTitle": "Login",
