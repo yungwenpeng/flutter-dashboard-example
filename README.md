@@ -1,4 +1,4 @@
-# thingsboard_app
+# simple_app
 
 A new Flutter project.
 
