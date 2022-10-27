@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+
+import '../models/models.dart';
+import '../controllers/controllers.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -73,15 +77,19 @@ class _LoginState extends State<Login> {
       showInSnackBar('Please fix the errors in red before submitting.');
     } else {
       form.save();
-      if (passwordController.text == "password") {
-        //SharedPreferences prefs = await SharedPreferences.getInstance();
-        //prefs.setString("username", usernameController.text);
-        await storage.write(key: "username", value: usernameController.text);
+      var userBaseProvider =
+          Provider.of<UserBaseProvider>(context, listen: false);
+      var userController = userBaseProvider.userBaseController;
+      try {
+        await userController.login(
+            LoginRequest(usernameController.text, passwordController.text));
         // ignore: use_build_context_synchronously
         Navigator.pushNamedAndRemoveUntil(
             context, '/home', ModalRoute.withName('/home'));
-      } else {
-        showInSnackBar('Incorrect credentials');
+      } catch (e, s) {
+        print('Error: $e');
+        print('Stack: $s');
+        showInSnackBar('Invalid username or password');
       }
     }
   }
@@ -105,6 +113,7 @@ class _LoginState extends State<Login> {
         key: _scaffoldMessengerKey,
         backgroundColor: Colors.transparent,
         appBar: AppBar(
+          centerTitle: true,
           title: Text(AppLocalizations.of(context)!.loginAppBarTitle),
         ),
         body: SafeArea(
@@ -213,12 +222,12 @@ class _LoginState extends State<Login> {
               : 'Username is required';
         } else if (value != null &&
             hintText == "Password" &&
-            value.length < 8) {
-          return 'Minimum character length is 8';
+            value.length < 6) {
+          return 'Minimum character length is 6';
         } else if (value != null &&
             hintText == "Username(email)" &&
             !(value.contains("@"))) {
-          return 'Username need @ character';
+          return 'Username(email) need @ character';
         } else {
           return null;
         }

@@ -4,7 +4,18 @@
     "homeAppBarTitle": "歡迎來到首頁！",
     "loginAppBarTitle": "登入",
     "drawerHome": "首頁",
+    "drawerUsers": "使用者清單",
     "drawerDevice": "設備",
     "drawerDashboard": "儀表版",
-    "drawerLogout": "登出"
+    "drawerLogout": "登出",
+    "alertDialogConfirm": "確定",
+    "usersFloatActionViewModule": "切換模式",
+    "usersFloatActionAddUser": "新增使用者帳號",
+    "usersUpdateDialogTitle": "編輯使用者",
+    "usersUpdateDialogName": "輸入使用者名稱",
+    "usersUpdateDialogEmail": "輸入信箱",
+    "usersUpdateDialogPassword": "輸入密碼",
+    "usersUpdateDialogRole": "輸入權限",
+    "usersUpdateDialogSave": "儲存",
+    "usersUpdateDialogCancel": "取消"
 }

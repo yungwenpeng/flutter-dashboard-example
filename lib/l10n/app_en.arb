@@ -3,8 +3,19 @@
     "welcomeHomePage": "Welcome to Demo Homepage!",
     "homeAppBarTitle": "Demo HomePage",
     "loginAppBarTitle": "Login",
-    "drawerHome": "­Home",
+    "drawerHome": "Home",
+    "drawerUsers": "Users",
     "drawerDevice": "Device",
     "drawerDashboard": "Dashboard",
-    "drawerLogout": "Logout"
+    "drawerLogout": "Logout",
+    "alertDialogConfirm": "Ok",
+    "usersFloatActionViewModule": "Change view module",
+    "usersFloatActionAddUser": "Add new account",
+    "usersUpdateDialogTitle": "Edit User data",
+    "usersUpdateDialogName": "Enter username",
+    "usersUpdateDialogEmail": "Enter email",
+    "usersUpdateDialogPassword": "Enter password",
+    "usersUpdateDialogRole": "Enter authority",
+    "usersUpdateDialogSave": "Save",
+    "usersUpdateDialogCancel": "Cancel"
 }

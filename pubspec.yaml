@@ -43,6 +43,10 @@ dependencies:
   flutter_secure_storage: ^6.0.0
   flutter_dotenv: ^5.0.2
   url_strategy: ^0.2.0
+  freezed_annotation: ^2.2.0
+  json_annotation: ^4.7.0
+  dio: ^4.0.6
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +58,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  build_runner: ^2.3.2
+  freezed: ^2.2.0
+  json_serializable: ^6.5.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -17,5 +17,18 @@ samples, guidance on mobile development, and a full API reference.
 
 Introduction to localizations in Flutter: view [internationalization](https://docs.flutter.dev/development/accessibility-and-localization/internationalization)  
   
-## Demo:  
+## Getting test RESTAPI  
+You can run "http://localhost:3000" from the [nodejs-example](https://github.com/yungwenpeng/nodejs-example)  
+  
+## Reference packages  
+package [dio](https://pub.dev/packages/dio)  
+package [freezed](https://pub.dev/packages/freezed)  
+package [jwt_decoder](https://pub.dev/packages/jwt_decoder)  
+package [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage)  
+  
+## With test RESTAPI Demo:  
+![flutter_with_localapi_example](flutter_with_localapi_example.gif)  
+  
+## Simple Demo:  
 ![flutter-dashboard-example](flutter_example.gif)  
+  
