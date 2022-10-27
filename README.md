@@ -2,6 +2,8 @@
 
 A new Flutter project.
 
+others thingsboard_example_app can find [here](https://github.com/yungwenpeng/flutter-dashboard-example/tree/thingsboard)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
