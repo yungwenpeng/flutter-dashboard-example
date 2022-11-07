@@ -5,12 +5,16 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:thingsboard_app/models/models.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'package:thingsboard_app/models/models.dart';
 import 'package:thingsboard_app/pages/login.dart';
 
 Widget createLoginScreen() => ChangeNotifierProvider<UserBaseProvider>(
@@ -83,6 +87,23 @@ void main() {
       expect(find.text('Please fix the errors in red before submitting.'),
           findsOneWidget);
       expect(find.text('Minimum character length is 6'), findsOneWidget);
+    });
+  });
+  group('RestApi Tests', () {
+    setUpAll(() {
+      HttpOverrides.global = null;
+    });
+    testWidgets('Testing read', (tester) async {
+      await dotenv.load(fileName: ".env");
+      var apiUrl = dotenv.get('API_URL');
+      await tester.runAsync(() async {
+        final HttpClient client = HttpClient();
+        final HttpClientRequest request = await client
+            .getUrl(Uri.parse('$apiUrl/api/users?query=user1@test.com'));
+
+        final HttpClientResponse response = await request.close();
+        expect(response.statusCode, 200);
+      });
     });
   });
 }
