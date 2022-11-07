@@ -34,3 +34,7 @@ package [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage
 ## Simple Demo:  
 ![flutter-dashboard-example](flutter_example.gif)  
   
+## Flutter Testing
+refer to [here](https://docs.flutter.dev/cookbook/testing)  
+Simple test:  
+![flutter-test](flutter-test.png)  
