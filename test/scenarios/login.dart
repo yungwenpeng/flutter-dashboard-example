@@ -1,22 +1,11 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'package:thingsboard_app/models/models.dart';
-import 'package:thingsboard_app/pages/login.dart';
+import 'package:thingsboard_app/models/user_provider.dart';
+import 'package:thingsboard_app/pages/pages.dart';
 
 Widget createLoginScreen() => ChangeNotifierProvider<UserBaseProvider>(
       create: (context) => UserBaseProvider(),
@@ -30,7 +19,9 @@ Widget createLoginScreen() => ChangeNotifierProvider<UserBaseProvider>(
     );
 
 void main() {
-  group('Login Page Widget Tests', () {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  group('Login Page Widget Tests : ', () {
     testWidgets('Testing if SingleChildScrollView shows up', (tester) async {
       // Build the widget
       await tester.pumpWidget(createLoginScreen());
@@ -48,7 +39,7 @@ void main() {
       expect(find.byIcon(Icons.login), findsWidgets);
     });
 
-    testWidgets('Testing SnackBar if username input validation error',
+    testWidgets('validating error message when username input error',
         (tester) async {
       await tester.pumpWidget(createLoginScreen());
       /* 
@@ -66,7 +57,7 @@ void main() {
       expect(find.text('Username(email) need @ character'), findsOneWidget);
     });
 
-    testWidgets('Testing SnackBar if password input validation error',
+    testWidgets('validating error message when password input error',
         (tester) async {
       var inputText = '12';
       await tester.pumpWidget(createLoginScreen());
@@ -88,25 +79,6 @@ void main() {
       expect(find.text('Please fix the errors in red before submitting.'),
           findsOneWidget);
       expect(find.text('Minimum character length is 6'), findsOneWidget);
-    });
-  });
-  group('RestApi Tests', () {
-    setUpAll(() {
-      HttpOverrides.global = null;
-    });
-    testWidgets('Testing read', (tester) async {
-      await dotenv.load(fileName: ".env");
-      var apiUrl = dotenv.get('API_URL');
-      await tester.runAsync(() async {
-        final HttpClient client = HttpClient();
-        final HttpClientRequest request = await client
-            .getUrl(Uri.parse('$apiUrl/api/users?query=user1@test.com'));
-
-        final HttpClientResponse response = await request.close();
-        final stringData = await response.transform(utf8.decoder).join();
-        print(stringData);
-        expect(response.statusCode, 200);
-      });
     });
   });
 }
