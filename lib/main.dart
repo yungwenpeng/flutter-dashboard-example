@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:thingsboard_app/pages/users.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'models/models.dart';

@@ -99,7 +99,31 @@ class _UserListState extends State<UserList> {
       body:
           columnCount == 2 ? createGridBody(context) : createListBody(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Row(
+      floatingActionButton: ExpandableFab(
+        distance: 80.0,
+        children: [
+          ActionButton(
+            onPressed: (() {
+              changeMode();
+            }),
+            icon: columnCount == 2
+                ? const Icon(Icons.view_list)
+                : const Icon(Icons.grid_view),
+          ),
+          ActionButton(
+            onPressed: (() {}),
+            icon: const Icon(Icons.table_rows),
+          ),
+          ActionButton(
+            onPressed: (() {
+              _showEditUserDialog(
+                  context, 'ADD', "", "", "", _users.length - 1);
+            }),
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      )
+      /*Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FloatingActionButton(
@@ -128,7 +152,8 @@ class _UserListState extends State<UserList> {
                   child: const Icon(Icons.add))
               : const SizedBox(),
         ],
-      ),
+      )*/
+      ,
     );
   }
 
