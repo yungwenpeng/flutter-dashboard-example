@@ -9,7 +9,10 @@ import '../models/models.dart';
 import 'pages.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  final VoidCallback onLogout;
+  final VoidCallback onUserList;
+  const MyHomePage(
+      {super.key, required this.onLogout, required this.onUserList});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -65,7 +68,10 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
           ),
-          drawer: const MyDrawer(),
+          drawer: MyDrawer(
+            onLogout: () => widget.onLogout(),
+            onUserList: () => widget.onUserList(),
+          ),
           body: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),

@@ -9,7 +9,13 @@ import '../models/models.dart';
 import 'pages.dart';
 
 class UserList extends StatefulWidget {
-  const UserList({super.key});
+  final VoidCallback onLogout;
+  final VoidCallback onUserList;
+  const UserList({
+    super.key,
+    required this.onLogout,
+    required this.onUserList,
+  });
 
   @override
   State<UserList> createState() => _UserListState();
@@ -95,7 +101,10 @@ class _UserListState extends State<UserList> {
           },
         ),
       ),
-      drawer: const MyDrawer(),
+      drawer: MyDrawer(
+        onLogout: () => widget.onLogout(),
+        onUserList: () => widget.onUserList(),
+      ),
       body:
           columnCount == 2 ? createGridBody(context) : createListBody(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

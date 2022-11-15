@@ -18,16 +18,21 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:thingsboard_app/models/models.dart';
 import 'package:thingsboard_app/pages/login.dart';
 
-Widget createLoginScreen() => ChangeNotifierProvider<UserBaseProvider>(
-      create: (context) => UserBaseProvider(),
-      child: const MaterialApp(
-        home: Login(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: [
-          Locale('en', ''),
-        ],
-      ),
-    );
+Widget createLoginScreen() {
+  var login = Login(
+    onLogin: () {},
+  );
+  return ChangeNotifierProvider<UserBaseProvider>(
+    create: (context) => UserBaseProvider(),
+    child: MaterialApp(
+      home: login,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: const [
+        Locale('en', ''),
+      ],
+    ),
+  );
+}
 
 void main() {
   group('Login Page Widget Tests', () {

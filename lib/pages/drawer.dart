@@ -3,11 +3,19 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../models/models.dart';
+import '../route/route.dart';
+import 'pages.dart';
 
 enum DrawerIDs { home, users, devices, dashboard, logout }
 
 class MyDrawer extends StatefulWidget {
-  const MyDrawer({super.key});
+  final VoidCallback onLogout;
+  final VoidCallback onUserList;
+  const MyDrawer({
+    super.key,
+    required this.onLogout,
+    required this.onUserList,
+  });
 
   @override
   State<MyDrawer> createState() => _MyDrawerState();
@@ -16,7 +24,7 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   late String? _username;
   List<Widget> drawerList = [];
-  int _selectedDestination = 0;
+  int? _selectedDestination;
 
   void _clearUserInfo() async {
     var userBaseProvider =
@@ -63,23 +71,32 @@ class _MyDrawerState extends State<MyDrawer> {
     });
     switch (index) {
       case 0:
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/home', ModalRoute.withName('/home'));
+        MyAppRouterDelegate().loggedIn = true;
+        MyAppRouterDelegate().userListIn = null;
+        Navigator.maybePop(context);
         break;
       case 1:
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/users', ModalRoute.withName('/users'));
+        widget.onUserList();
+        MyAppRouterDelegate().loggedIn = true;
         break;
-      case 2:
-        //Navigator.pushNamedAndRemoveUntil(context, '/device', ModalRoute.withName('/device'));
-        break;
-      case 3:
-        //Navigator.pushNamedAndRemoveUntil(context, '/dashboard', ModalRoute.withName('/dashboard'));
-        break;
+      //case 2:
+      //Navigator.pushNamedAndRemoveUntil(context, '/device', ModalRoute.withName('/device'));
+      //break;
+      //case 3:
+      //Navigator.pushNamedAndRemoveUntil(context, '/dashboard', ModalRoute.withName('/dashboard'));
+      //break;
       case 4:
+        widget.onLogout();
         _clearUserInfo();
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/login', ModalRoute.withName('/login'));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Login(
+                      onLogin: () {
+                        MyAppRouterDelegate().loggedIn = false;
+                        MyAppRouterDelegate().userListIn = false;
+                      },
+                    )));
         break;
     }
   }
@@ -99,10 +116,10 @@ class _MyDrawerState extends State<MyDrawer> {
         DrawerIDs.home.index, Icons.home));
     drawerList.add(buildListTile(AppLocalizations.of(context)!.drawerUsers,
         DrawerIDs.users.index, Icons.people));
-    drawerList.add(buildListTile(AppLocalizations.of(context)!.drawerDevice,
+    /*drawerList.add(buildListTile(AppLocalizations.of(context)!.drawerDevice,
         DrawerIDs.devices.index, Icons.devices));
     drawerList.add(buildListTile(AppLocalizations.of(context)!.drawerDashboard,
-        DrawerIDs.dashboard.index, Icons.dashboard));
+        DrawerIDs.dashboard.index, Icons.dashboard));*/
     drawerList.add(buildListTile(AppLocalizations.of(context)!.drawerLogout,
         DrawerIDs.logout.index, Icons.logout));
   }
@@ -130,7 +147,10 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
           ),
           selected: isSelected,
-          onTap: () => selectDestination(index),
+          onTap: () {
+            Navigator.maybePop(context);
+            selectDestination(index);
+          },
         ));
   }
 }

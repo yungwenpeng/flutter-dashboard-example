@@ -7,16 +7,21 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thingsboard_app/models/user_provider.dart';
 import 'package:thingsboard_app/pages/pages.dart';
 
-Widget createLoginScreen() => ChangeNotifierProvider<UserBaseProvider>(
-      create: (context) => UserBaseProvider(),
-      child: const MaterialApp(
-        home: Login(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: [
-          Locale('en', ''),
-        ],
-      ),
-    );
+Widget createLoginScreen() {
+  var login = Login(
+    onLogin: () {},
+  );
+  return ChangeNotifierProvider<UserBaseProvider>(
+    create: (context) => UserBaseProvider(),
+    child: MaterialApp(
+      home: login,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: const [
+        Locale('en', ''),
+      ],
+    ),
+  );
+}
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();

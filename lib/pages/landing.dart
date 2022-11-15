@@ -18,24 +18,6 @@ class _LandingState extends State<Landing> {
   @override
   void initState() {
     super.initState();
-    _loadUserInfo();
-  }
-
-  _loadUserInfo() async {
-    final userBaseProvider =
-        Provider.of<UserBaseProvider>(context, listen: false);
-    userBaseProvider.init().then(
-      (isAuthenticated) {
-        //print('_loadUserInfo: isAuthenticated: $isAuthenticated');
-        if (isAuthenticated) {
-          Navigator.pushNamedAndRemoveUntil(
-              context, '/home', ModalRoute.withName('/home'));
-        } else {
-          Navigator.pushNamedAndRemoveUntil(
-              context, '/login', ModalRoute.withName('/login'));
-        }
-      },
-    );
   }
 
   @override
