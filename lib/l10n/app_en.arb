@@ -3,6 +3,15 @@
     "welcomeHomePage": "Welcome to Demo Homepage!",
     "homeAppBarTitle": "Demo HomePage",
     "loginAppBarTitle": "Login",
+    "loginCardUserName": "Username",
+    "loginCardUserNameCharacter": "character(s)",
+    "loginCardUserNameCheck": "Username(email) need @ character",
+    "loginCardPassword": "Password",
+    "loginCardPasswordLimitLength": "Minimum character length is 6",
+    "loginCardUserNameRequired": "Username is required",
+    "loginCardPasswordRequired": "Password is required",
+    "loginButtonSubmitError": "Please fix the errors in red before submitting.",
+    "loginButtonSubmitInvalid": "Invalid username or password",
     "drawerHome": "Home",
     "drawerUsers": "Users",
     "drawerDevice": "Device",
@@ -17,5 +26,11 @@
     "usersUpdateDialogPassword": "Enter password",
     "usersUpdateDialogRole": "Enter authority",
     "usersUpdateDialogSave": "Save",
-    "usersUpdateDialogCancel": "Cancel"
+    "usersUpdateDialogCancel": "Cancel",
+    "usersDataTableHeaderName": "Name",
+    "usersDataTableHeaderEmail": "Email",
+    "usersDataTableHeaderAuthority": "Authority",
+    "usersDataTableSearchbyName": "Search by name",
+    "usersDataTableSearchbyEmail": "Search by SW email",
+    "usersDataTableSearchbyAuthority": "Search by Authority"
 }

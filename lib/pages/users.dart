@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thingsboard_app/controllers/user_base.dart';
+import 'package:data_table_2/data_table_2.dart';
 
 import '../models/models.dart';
 import 'pages.dart';
@@ -32,6 +33,7 @@ class _UserListState extends State<UserList> {
   final _passwordController = TextEditingController();
   late TextEditingController _roleController;
   Authority? authUserAuthority;
+  String viewType = 'gridview';
 
   @override
   void dispose() {
@@ -41,6 +43,7 @@ class _UserListState extends State<UserList> {
     _emailController.dispose();
     _passwordController.dispose();
     _roleController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
@@ -53,6 +56,7 @@ class _UserListState extends State<UserList> {
 
   void _loadUserInfo() async {
     _users = [];
+    _usersForSearch = [];
     var userBaseProvider =
         Provider.of<UserBaseProvider>(context, listen: false);
     var userBaseController = userBaseProvider.userBaseController;
@@ -78,6 +82,7 @@ class _UserListState extends State<UserList> {
     setState(() {
       _users;
       authUserAuthority;
+      viewType = 'gridview';
     });
   }
 
@@ -89,7 +94,7 @@ class _UserListState extends State<UserList> {
     }
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.transparent,
+      //backgroundColor: Colors.transparent,
       key: scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
@@ -105,8 +110,11 @@ class _UserListState extends State<UserList> {
         onLogout: () => widget.onLogout(),
         onUserList: () => widget.onUserList(),
       ),
-      body:
-          columnCount == 2 ? createGridBody(context) : createListBody(context),
+      body: viewType == 'gridview'
+          ? (columnCount == 2
+              ? createGridBody(context)
+              : createListBody(context))
+          : createDataTableBody(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: ExpandableFab(
         distance: 80.0,
@@ -120,16 +128,22 @@ class _UserListState extends State<UserList> {
                 : const Icon(Icons.grid_view),
           ),
           ActionButton(
-            onPressed: (() {}),
+            onPressed: (() {
+              setState(() {
+                viewType = 'datatableview';
+              });
+            }),
             icon: const Icon(Icons.table_rows),
           ),
-          ActionButton(
-            onPressed: (() {
-              _showEditUserDialog(
-                  context, 'ADD', "", "", "", _users.length - 1);
-            }),
-            icon: const Icon(Icons.add),
-          ),
+          authUserAuthority == Authority.sysAdmin
+              ? ActionButton(
+                  onPressed: (() {
+                    _showEditUserDialog(
+                        context, 'ADD', "", "", "", _users.length - 1);
+                  }),
+                  icon: const Icon(Icons.add),
+                )
+              : const SizedBox(),
         ],
       )
       /*Row(
@@ -187,12 +201,14 @@ class _UserListState extends State<UserList> {
         columnCount = 1;
         aspectWidth = 3;
         aspectHeight = 1;
+        viewType = 'gridview';
       });
     } else {
       setState(() {
         columnCount = 2;
         aspectWidth = 2;
         aspectHeight = 1;
+        viewType = 'gridview';
       });
     }
   }
@@ -545,6 +561,205 @@ class _UserListState extends State<UserList> {
           _users.add(response);
         });
       }
+    }
+  }
+
+  int _currentSortColumn = 0;
+  bool _isAscending = true;
+  TextEditingController searchController = TextEditingController();
+  bool _isSearching = false;
+  String searchType = 'email';
+  late final List<Users> _usersForSearch;
+
+  Widget createDataTableBody(BuildContext context) {
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextField(
+          onChanged: (value) {
+            filterSearchResults(value);
+          },
+          controller: searchController,
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.search),
+            labelText: searchType == 'email'
+                ? (AppLocalizations.of(context)!.usersDataTableSearchbyEmail)
+                : (searchType == 'name'
+                    ? AppLocalizations.of(context)!.usersDataTableSearchbyName
+                    : AppLocalizations.of(context)!
+                        .usersDataTableSearchbyAuthority),
+            hintText: searchType == 'email'
+                ? (AppLocalizations.of(context)!.usersDataTableSearchbyEmail)
+                : (searchType == 'name'
+                    ? AppLocalizations.of(context)!.usersDataTableSearchbyName
+                    : AppLocalizations.of(context)!
+                        .usersDataTableSearchbyAuthority),
+            border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(25.0))),
+            suffixIcon: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  onPressed: (() {
+                    searchController.clear();
+                    _isSearching = false;
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
+                  }),
+                  icon: const Icon(Icons.clear),
+                ),
+                PopupMenuButton(
+                  shape: RoundedRectangleBorder(
+                      side: const BorderSide(color: Colors.white70),
+                      borderRadius: BorderRadius.circular(10)),
+                  color: const Color.fromARGB(255, 45, 160, 189),
+                  icon: const Icon(Icons.more_vert),
+                  itemBuilder: ((context) => <PopupMenuEntry>[
+                        PopupMenuItem(
+                          value: 'email',
+                          child: ListTile(
+                            title: Text(AppLocalizations.of(context)!
+                                .usersDataTableSearchbyEmail),
+                            textColor: searchType == 'email'
+                                ? const Color.fromARGB(255, 204, 47, 47)
+                                : Colors.white,
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'name',
+                          child: ListTile(
+                            title: Text(AppLocalizations.of(context)!
+                                .usersDataTableSearchbyName),
+                            textColor: searchType == 'name'
+                                ? const Color.fromARGB(255, 204, 47, 47)
+                                : Colors.white,
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'authority',
+                          child: ListTile(
+                            title: Text(AppLocalizations.of(context)!
+                                .usersDataTableSearchbyAuthority),
+                            textColor: searchType == 'authority'
+                                ? const Color.fromARGB(255, 204, 47, 47)
+                                : Colors.white,
+                          ),
+                        ),
+                      ]),
+                  onSelected: (value) {
+                    setState(() {
+                      searchType = '$value';
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      Expanded(
+        child: DataTable2(
+          columnSpacing: 6,
+          horizontalMargin: 30,
+          minWidth: 600,
+          fixedTopRows: 1,
+          fixedLeftColumns: 1,
+          headingRowColor: MaterialStateProperty.all(
+              const Color.fromARGB(255, 197, 168, 40)),
+          sortAscending: _isAscending,
+          sortColumnIndex: _currentSortColumn,
+          headingTextStyle: const TextStyle(
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          dataTextStyle: const TextStyle(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          dataRowColor: MaterialStateProperty.all(
+              const Color.fromARGB(255, 134, 135, 139)),
+          columns: _createColumns(),
+          rows: _createRows(),
+        ),
+      )
+    ]);
+  }
+
+  List<DataColumn> _createColumns() {
+    return [
+      DataColumn(
+          label: Text(AppLocalizations.of(context)!.usersDataTableHeaderName)),
+      DataColumn(
+          label: Text(AppLocalizations.of(context)!.usersDataTableHeaderEmail),
+          onSort: ((columnIndex, _) {
+            setState(() {
+              _currentSortColumn = columnIndex;
+              if (_isAscending == true) {
+                _isAscending = false;
+                _users.sort((a, b) => b.email.compareTo(a.email));
+              } else {
+                _isAscending = true;
+                _users.sort((a, b) => a.email.compareTo(b.email));
+              }
+            });
+          })),
+      DataColumn(
+          label: Text(
+              AppLocalizations.of(context)!.usersDataTableHeaderAuthority)),
+    ];
+  }
+
+  List<DataRow> _createRows() {
+    List<DataRow> rows = [];
+    for (var user in _isSearching ? _usersForSearch : _users) {
+      rows.add(DataRow(cells: [
+        DataCell(Text(user.userName)),
+        DataCell(Text(user.email)),
+        DataCell(Text(user.role)),
+      ]));
+    }
+    return rows;
+  }
+
+  void filterSearchResults(String query) {
+    List<Users> dummySearchUser = [];
+    dummySearchUser.addAll(_users);
+    if (query.isNotEmpty) {
+      List<Users> dummyUserData = [];
+      dummySearchUser.forEach(((item) {
+        switch (searchType) {
+          case 'email':
+            if (item.email.contains(query)) {
+              dummyUserData.add(item);
+            }
+            break;
+          case 'name':
+            if (item.userName.contains(query)) {
+              dummyUserData.add(item);
+            }
+            break;
+          case 'authority':
+            if (item.role.contains(query)) {
+              dummyUserData.add(item);
+            }
+            break;
+          default:
+            if (item.email.contains(query)) {
+              dummyUserData.add(item);
+            }
+            break;
+        }
+      }));
+      setState(() {
+        _isSearching = true;
+        _usersForSearch.clear();
+        _usersForSearch.addAll(dummyUserData);
+      });
+    } else {
+      setState(() {
+        _isSearching = false;
+        _usersForSearch.clear();
+      });
     }
   }
 }

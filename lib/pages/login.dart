@@ -75,7 +75,7 @@ class _LoginState extends State<Login> {
   void _loginSubmitted() async {
     final FormState? form = _formKey.currentState;
     if (form == null || !form.validate()) {
-      showInSnackBar('Please fix the errors in red before submitting.');
+      showInSnackBar(AppLocalizations.of(context)!.loginButtonSubmitError);
     } else {
       form.save();
       var userBaseProvider =
@@ -88,7 +88,7 @@ class _LoginState extends State<Login> {
       } catch (e, s) {
         print('Error: $e');
         print('Stack: $s');
-        showInSnackBar('Invalid username or password');
+        showInSnackBar(AppLocalizations.of(context)!.loginButtonSubmitInvalid);
       }
     }
   }
@@ -140,7 +140,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     const SizedBox(height: 20.0),
-                    buildTextField('Username(email)'),
+                    buildTextField('Username'),
                     const SizedBox(height: 20.0),
                     buildTextField('Password'),
                     const SizedBox(height: 10.0),
@@ -184,12 +184,16 @@ class _LoginState extends State<Login> {
       controller:
           hintText == "Password" ? passwordController : usernameController,
       decoration: InputDecoration(
-        hintText: 'Enter $hintText',
+        hintText: hintText == 'Password'
+            ? AppLocalizations.of(context)!.loginCardPassword
+            : AppLocalizations.of(context)!.loginCardUserName,
         hintStyle: TextStyle(color: Colors.blueGrey[400]),
         prefixIcon: hintText == "Password"
             ? const Icon(Icons.lock)
             : const Icon(Icons.account_box),
-        labelText: hintText,
+        labelText: hintText == 'Password'
+            ? AppLocalizations.of(context)!.loginCardPassword
+            : AppLocalizations.of(context)!.loginCardUserName,
         labelStyle: TextStyle(
           color: Colors.grey[600],
           fontSize: 22,
@@ -210,23 +214,23 @@ class _LoginState extends State<Login> {
               )
             : null,
         counterText: hintText == "Password"
-            ? '${passwordController.text.length.toString()} character(s)'
+            ? '${passwordController.text.length.toString()} ${AppLocalizations.of(context)!.loginCardUserNameCharacter}'
             : null,
       ),
       obscureText: hintText == "Password" ? _isHidden : false,
       validator: (String? value) {
         if (value != null && value.isEmpty) {
           return hintText == "Password"
-              ? 'Password is required'
-              : 'Username is required';
+              ? AppLocalizations.of(context)!.loginCardPasswordRequired
+              : AppLocalizations.of(context)!.loginCardUserNameRequired;
         } else if (value != null &&
             hintText == "Password" &&
             value.length < 6) {
-          return 'Minimum character length is 6';
+          return AppLocalizations.of(context)!.loginCardPasswordLimitLength;
         } else if (value != null &&
-            hintText == "Username(email)" &&
+            hintText == "Username" &&
             !(value.contains("@"))) {
-          return 'Username(email) need @ character';
+          return AppLocalizations.of(context)!.loginCardUserNameCheck;
         } else {
           return null;
         }

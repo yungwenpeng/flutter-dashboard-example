@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Hi $_username,\nWelcome to Demo Homepage!',
+                      'Hi $_username,\n${AppLocalizations.of(context)!.welcomeHomePage}',
                       style: TextStyle(
                         color: Colors.black.withOpacity(0.6),
                         fontSize: 24,

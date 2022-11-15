@@ -51,6 +51,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   path: ^1.8.2
   http: ^0.13.5
+  data_table_2: ^2.3.8
 
 dev_dependencies:
   flutter_driver:

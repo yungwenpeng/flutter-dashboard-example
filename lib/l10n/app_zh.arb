@@ -3,6 +3,15 @@
     "welcomeHomePage": "歡迎來到首頁, 請登入以繼續!",
     "homeAppBarTitle": "歡迎來到首頁！",
     "loginAppBarTitle": "登入",
+    "loginCardUserName": "登入帳號",
+    "loginCardUserNameCharacter": "字元",
+    "loginCardUserNameCheck": "登入帳號需符合Email格式",
+    "loginCardPassword": "登入密碼",
+    "loginCardPasswordLimitLength": "最少輸入長度6個字元",
+    "loginCardUserNameRequired": "登入帳號必須要輸入",
+    "loginCardPasswordRequired": "登入密碼必須要輸入",
+    "loginButtonSubmitError": "輸入不正確，請重新輸入！",
+    "loginButtonSubmitInvalid": "輸入的帳號或密碼不正確！",
     "drawerHome": "首頁",
     "drawerUsers": "使用者清單",
     "drawerDevice": "設備",
@@ -17,5 +26,11 @@
     "usersUpdateDialogPassword": "輸入密碼",
     "usersUpdateDialogRole": "輸入權限",
     "usersUpdateDialogSave": "儲存",
-    "usersUpdateDialogCancel": "取消"
+    "usersUpdateDialogCancel": "取消",
+    "usersDataTableHeaderName": "姓名",
+    "usersDataTableHeaderEmail": "電子信箱",
+    "usersDataTableHeaderAuthority": "權限",
+    "usersDataTableSearchbyName": "按姓名搜尋",
+    "usersDataTableSearchbyEmail": "按電子信箱搜尋",
+    "usersDataTableSearchbyAuthority": "按權限搜尋"
 }
