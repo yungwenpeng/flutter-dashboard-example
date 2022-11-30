@@ -2,20 +2,22 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thingsboard_app/controllers/user_base.dart';
 import 'package:data_table_2/data_table_2.dart';
 
+import '../localization/localization.dart';
 import '../models/models.dart';
 import 'pages.dart';
 
 class UserList extends StatefulWidget {
   final VoidCallback onLogout;
   final VoidCallback onUserList;
+  final VoidCallback onPreferences;
   const UserList({
     super.key,
     required this.onLogout,
     required this.onUserList,
+    required this.onPreferences,
   });
 
   @override
@@ -98,7 +100,7 @@ class _UserListState extends State<UserList> {
       key: scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
-        title: Text(AppLocalizations.of(context)!.drawerUsers),
+        title: Text(AppTranslations.of(context)!.text('drawerUsers')),
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () {
@@ -109,6 +111,7 @@ class _UserListState extends State<UserList> {
       drawer: MyDrawer(
         onLogout: () => widget.onLogout(),
         onUserList: () => widget.onUserList(),
+        onPreferences: () => widget.onPreferences(),
       ),
       body: viewType == 'gridview'
           ? (columnCount == 2
@@ -151,7 +154,7 @@ class _UserListState extends State<UserList> {
         children: [
           FloatingActionButton(
               heroTag: "viewModule",
-              tooltip: AppLocalizations.of(context)!.usersFloatActionViewModule,
+              tooltip: AppTranslations.of(context)!.text('usersFloatActionViewModule'),
               elevation: 0.0,
               backgroundColor: const Color.fromARGB(255, 102, 168, 223),
               onPressed: () => changeMode(),
@@ -164,7 +167,7 @@ class _UserListState extends State<UserList> {
               ? FloatingActionButton(
                   heroTag: "addUser",
                   tooltip:
-                      AppLocalizations.of(context)!.usersFloatActionAddUser,
+                      AppTranslations.of(context)!.text('usersFloatActionAddUser'),
                   elevation: 0.0,
                   backgroundColor: const Color.fromARGB(255, 102, 168, 223),
                   onPressed: () {
@@ -434,7 +437,7 @@ class _UserListState extends State<UserList> {
       context: context,
       builder: (BuildContext context) => AlertDialog(
         elevation: 0,
-        title: Text(AppLocalizations.of(context)!.usersUpdateDialogTitle,
+        title: Text(AppTranslations.of(context)!.text('usersUpdateDialogTitle'),
             textAlign: TextAlign.center),
         content: SingleChildScrollView(
             child: Column(
@@ -442,46 +445,48 @@ class _UserListState extends State<UserList> {
             TextField(
               controller: _userNameController,
               decoration: InputDecoration(
-                  labelText:
-                      AppLocalizations.of(context)!.usersUpdateDialogName,
-                  hintText:
-                      AppLocalizations.of(context)!.usersUpdateDialogName),
+                  labelText: AppTranslations.of(context)!
+                      .text('usersUpdateDialogName'),
+                  hintText: AppTranslations.of(context)!
+                      .text('usersUpdateDialogName')),
             ),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(
-                  labelText:
-                      AppLocalizations.of(context)!.usersUpdateDialogEmail,
-                  hintText:
-                      AppLocalizations.of(context)!.usersUpdateDialogEmail),
+                  labelText: AppTranslations.of(context)!
+                      .text('usersUpdateDialogEmail'),
+                  hintText: AppTranslations.of(context)!
+                      .text('usersUpdateDialogEmail')),
             ),
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(
-                  labelText:
-                      AppLocalizations.of(context)!.usersUpdateDialogPassword,
-                  hintText:
-                      AppLocalizations.of(context)!.usersUpdateDialogPassword),
+                  labelText: AppTranslations.of(context)!
+                      .text('usersUpdateDialogPassword'),
+                  hintText: AppTranslations.of(context)!
+                      .text('usersUpdateDialogPassword')),
             ),
             TextField(
               controller: _roleController,
               decoration: InputDecoration(
-                  labelText:
-                      AppLocalizations.of(context)!.usersUpdateDialogRole,
-                  hintText:
-                      AppLocalizations.of(context)!.usersUpdateDialogRole),
+                  labelText: AppTranslations.of(context)!
+                      .text('usersUpdateDialogRole'),
+                  hintText: AppTranslations.of(context)!
+                      .text('usersUpdateDialogRole')),
             ),
           ],
         )),
         actions: <Widget>[
           TextButton(
-            child: Text(AppLocalizations.of(context)!.usersUpdateDialogCancel),
+            child: Text(
+                AppTranslations.of(context)!.text('usersUpdateDialogCancel')),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: Text(AppLocalizations.of(context)!.usersUpdateDialogSave),
+            child: Text(
+                AppTranslations.of(context)!.text('usersUpdateDialogSave')),
             onPressed: () {
               setState(() {
                 _userNameController.text;
@@ -583,17 +588,21 @@ class _UserListState extends State<UserList> {
           decoration: InputDecoration(
             prefixIcon: const Icon(Icons.search),
             labelText: searchType == 'email'
-                ? (AppLocalizations.of(context)!.usersDataTableSearchbyEmail)
+                ? (AppTranslations.of(context)!
+                    .text('usersDataTableSearchbyEmail'))
                 : (searchType == 'name'
-                    ? AppLocalizations.of(context)!.usersDataTableSearchbyName
-                    : AppLocalizations.of(context)!
-                        .usersDataTableSearchbyAuthority),
+                    ? AppTranslations.of(context)!
+                        .text('usersDataTableSearchbyName')
+                    : AppTranslations.of(context)!
+                        .text('usersDataTableSearchbyAuthority')),
             hintText: searchType == 'email'
-                ? (AppLocalizations.of(context)!.usersDataTableSearchbyEmail)
+                ? (AppTranslations.of(context)!
+                    .text('usersDataTableSearchbyEmail'))
                 : (searchType == 'name'
-                    ? AppLocalizations.of(context)!.usersDataTableSearchbyName
-                    : AppLocalizations.of(context)!
-                        .usersDataTableSearchbyAuthority),
+                    ? AppTranslations.of(context)!
+                        .text('usersDataTableSearchbyName')
+                    : AppTranslations.of(context)!
+                        .text('usersDataTableSearchbyAuthority')),
             border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(25.0))),
             suffixIcon: Row(
@@ -622,8 +631,8 @@ class _UserListState extends State<UserList> {
                         PopupMenuItem(
                           value: 'email',
                           child: ListTile(
-                            title: Text(AppLocalizations.of(context)!
-                                .usersDataTableSearchbyEmail),
+                            title: Text(AppTranslations.of(context)!
+                                .text('usersDataTableSearchbyEmail')),
                             textColor: searchType == 'email'
                                 ? const Color.fromARGB(255, 204, 47, 47)
                                 : Colors.white,
@@ -632,8 +641,8 @@ class _UserListState extends State<UserList> {
                         PopupMenuItem(
                           value: 'name',
                           child: ListTile(
-                            title: Text(AppLocalizations.of(context)!
-                                .usersDataTableSearchbyName),
+                            title: Text(AppTranslations.of(context)!
+                                .text('usersDataTableSearchbyName')),
                             textColor: searchType == 'name'
                                 ? const Color.fromARGB(255, 204, 47, 47)
                                 : Colors.white,
@@ -642,8 +651,8 @@ class _UserListState extends State<UserList> {
                         PopupMenuItem(
                           value: 'authority',
                           child: ListTile(
-                            title: Text(AppLocalizations.of(context)!
-                                .usersDataTableSearchbyAuthority),
+                            title: Text(AppTranslations.of(context)!
+                                .text('usersDataTableSearchbyAuthority')),
                             textColor: searchType == 'authority'
                                 ? const Color.fromARGB(255, 204, 47, 47)
                                 : Colors.white,
@@ -688,9 +697,11 @@ class _UserListState extends State<UserList> {
   List<DataColumn> _createColumns() {
     return [
       DataColumn(
-          label: Text(AppLocalizations.of(context)!.usersDataTableHeaderName)),
+          label: Text(
+              AppTranslations.of(context)!.text('usersDataTableHeaderName'))),
       DataColumn(
-          label: Text(AppLocalizations.of(context)!.usersDataTableHeaderEmail),
+          label: Text(
+              AppTranslations.of(context)!.text('usersDataTableHeaderEmail')),
           onSort: ((columnIndex, _) {
             setState(() {
               _currentSortColumn = columnIndex;
@@ -704,8 +715,8 @@ class _UserListState extends State<UserList> {
             });
           })),
       DataColumn(
-          label: Text(
-              AppLocalizations.of(context)!.usersDataTableHeaderAuthority)),
+          label: Text(AppTranslations.of(context)!
+              .text('usersDataTableHeaderAuthority'))),
     ];
   }
 

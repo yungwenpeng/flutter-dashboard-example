@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../localization/localization.dart';
 import '../models/models.dart';
 import '../route/route.dart';
 import 'pages.dart';
 
-enum DrawerIDs { home, users, devices, dashboard, logout }
+enum DrawerIDs { home, users, devices, dashboard, logout, preferences }
 
 class MyDrawer extends StatefulWidget {
   final VoidCallback onLogout;
   final VoidCallback onUserList;
+  final VoidCallback onPreferences;
   const MyDrawer({
     super.key,
     required this.onLogout,
     required this.onUserList,
+    required this.onPreferences,
   });
 
   @override
@@ -98,6 +100,10 @@ class _MyDrawerState extends State<MyDrawer> {
                       },
                     )));
         break;
+      case 5:
+        widget.onPreferences();
+        MyAppRouterDelegate().loggedIn = true;
+        break;
     }
   }
 
@@ -112,16 +118,26 @@ class _MyDrawerState extends State<MyDrawer> {
       ),
     ));
     drawerList.add(const Divider(height: 2, thickness: 2, color: Colors.white));
-    drawerList.add(buildListTile(AppLocalizations.of(context)!.drawerHome,
-        DrawerIDs.home.index, Icons.home));
-    drawerList.add(buildListTile(AppLocalizations.of(context)!.drawerUsers,
-        DrawerIDs.users.index, Icons.people));
-    /*drawerList.add(buildListTile(AppLocalizations.of(context)!.drawerDevice,
+    drawerList.add(buildListTile(
+        AppTranslations.of(context)!.text('drawerHome'),
+        DrawerIDs.home.index,
+        Icons.home));
+    drawerList.add(buildListTile(
+        AppTranslations.of(context)!.text('drawerUsers'),
+        DrawerIDs.users.index,
+        Icons.people));
+    /*drawerList.add(buildListTile(AppTranslations.of(context)!.text('drawerDevice'),
         DrawerIDs.devices.index, Icons.devices));
-    drawerList.add(buildListTile(AppLocalizations.of(context)!.drawerDashboard,
+    drawerList.add(buildListTile(AppTranslations.of(context)!.text('drawerDashboard'),
         DrawerIDs.dashboard.index, Icons.dashboard));*/
-    drawerList.add(buildListTile(AppLocalizations.of(context)!.drawerLogout,
-        DrawerIDs.logout.index, Icons.logout));
+    drawerList.add(buildListTile(
+        AppTranslations.of(context)!.text('drawerLogout'),
+        DrawerIDs.logout.index,
+        Icons.logout));
+    drawerList.add(buildListTile(
+        AppTranslations.of(context)!.text('drawerPreferences'),
+        DrawerIDs.preferences.index,
+        Icons.settings));
   }
 
   Widget buildListTile(String title, int index, IconData iconName) {

@@ -17,6 +17,7 @@
     "drawerDevice": "Device",
     "drawerDashboard": "Dashboard",
     "drawerLogout": "Logout",
+    "drawerPreferences": "Preferences",
     "alertDialogConfirm": "Ok",
     "usersFloatActionViewModule": "Change view module",
     "usersFloatActionAddUser": "Add new account",
@@ -32,5 +33,6 @@
     "usersDataTableHeaderAuthority": "Authority",
     "usersDataTableSearchbyName": "Search by name",
     "usersDataTableSearchbyEmail": "Search by SW email",
-    "usersDataTableSearchbyAuthority": "Search by Authority"
+    "usersDataTableSearchbyAuthority": "Search by Authority",
+    "preferencesSelectLanguage": "Select Language :"
 }

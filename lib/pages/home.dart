@@ -2,17 +2,21 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '../localization/localization.dart';
 import '../models/models.dart';
 import 'pages.dart';
 
 class MyHomePage extends StatefulWidget {
   final VoidCallback onLogout;
   final VoidCallback onUserList;
+  final VoidCallback onPreferences;
   const MyHomePage(
-      {super.key, required this.onLogout, required this.onUserList});
+      {super.key,
+      required this.onLogout,
+      required this.onUserList,
+      required this.onPreferences});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -60,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
           key: scaffoldKey,
           appBar: AppBar(
             centerTitle: true,
-            title: Text(AppLocalizations.of(context)!.homeAppBarTitle),
+            title: Text(AppTranslations.of(context)!.text('homeAppBarTitle')),
             leading: IconButton(
               icon: const Icon(Icons.menu),
               onPressed: () {
@@ -71,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
           drawer: MyDrawer(
             onLogout: () => widget.onLogout(),
             onUserList: () => widget.onUserList(),
+            onPreferences: () => widget.onPreferences(),
           ),
           body: SafeArea(
             child: SingleChildScrollView(
@@ -80,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Hi $_username,\n${AppLocalizations.of(context)!.welcomeHomePage}',
+                      'Hi $_username,\n${AppTranslations.of(context)!.text('welcomeHomePage')}',
                       style: TextStyle(
                         color: Colors.black.withOpacity(0.6),
                         fontSize: 24,

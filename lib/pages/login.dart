@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '../localization/localization.dart';
 import '../models/models.dart';
 import '../controllers/controllers.dart';
 
@@ -75,7 +75,8 @@ class _LoginState extends State<Login> {
   void _loginSubmitted() async {
     final FormState? form = _formKey.currentState;
     if (form == null || !form.validate()) {
-      showInSnackBar(AppLocalizations.of(context)!.loginButtonSubmitError);
+      showInSnackBar(
+          AppTranslations.of(context)!.text('oginButtonSubmitError'));
     } else {
       form.save();
       var userBaseProvider =
@@ -88,7 +89,8 @@ class _LoginState extends State<Login> {
       } catch (e, s) {
         print('Error: $e');
         print('Stack: $s');
-        showInSnackBar(AppLocalizations.of(context)!.loginButtonSubmitInvalid);
+        showInSnackBar(
+            AppTranslations.of(context)!.text('loginButtonSubmitInvalid'));
       }
     }
   }
@@ -113,7 +115,7 @@ class _LoginState extends State<Login> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
-          title: Text(AppLocalizations.of(context)!.loginAppBarTitle),
+          title: Text(AppTranslations.of(context)!.text('loginAppBarTitle')),
         ),
         body: SafeArea(
           child: Form(
@@ -132,7 +134,7 @@ class _LoginState extends State<Login> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      AppLocalizations.of(context)!.welcomeHomePage,
+                      AppTranslations.of(context)!.text('welcomeHomePage'),
                       style: TextStyle(
                         color: Colors.black.withOpacity(0.6),
                         fontSize: 24,
@@ -163,8 +165,8 @@ class _LoginState extends State<Login> {
                         _loginSubmitted(); // Respond to button press
                       },
                       icon: const Icon(Icons.login, size: 20),
-                      label:
-                          Text(AppLocalizations.of(context)!.loginAppBarTitle),
+                      label: Text(AppTranslations.of(context)!
+                          .text('loginAppBarTitle')),
                     ),
                   ],
                 ),
@@ -185,15 +187,15 @@ class _LoginState extends State<Login> {
           hintText == "Password" ? passwordController : usernameController,
       decoration: InputDecoration(
         hintText: hintText == 'Password'
-            ? AppLocalizations.of(context)!.loginCardPassword
-            : AppLocalizations.of(context)!.loginCardUserName,
+            ? AppTranslations.of(context)!.text('loginCardPassword')
+            : AppTranslations.of(context)!.text('loginCardUserName'),
         hintStyle: TextStyle(color: Colors.blueGrey[400]),
         prefixIcon: hintText == "Password"
             ? const Icon(Icons.lock)
             : const Icon(Icons.account_box),
         labelText: hintText == 'Password'
-            ? AppLocalizations.of(context)!.loginCardPassword
-            : AppLocalizations.of(context)!.loginCardUserName,
+            ? AppTranslations.of(context)!.text('loginCardPassword')
+            : AppTranslations.of(context)!.text('loginCardUserName'),
         labelStyle: TextStyle(
           color: Colors.grey[600],
           fontSize: 22,
@@ -214,23 +216,24 @@ class _LoginState extends State<Login> {
               )
             : null,
         counterText: hintText == "Password"
-            ? '${passwordController.text.length.toString()} ${AppLocalizations.of(context)!.loginCardUserNameCharacter}'
+            ? '${passwordController.text.length.toString()} ${AppTranslations.of(context)!.text('loginCardUserNameCharacter')}'
             : null,
       ),
       obscureText: hintText == "Password" ? _isHidden : false,
       validator: (String? value) {
         if (value != null && value.isEmpty) {
           return hintText == "Password"
-              ? AppLocalizations.of(context)!.loginCardPasswordRequired
-              : AppLocalizations.of(context)!.loginCardUserNameRequired;
+              ? AppTranslations.of(context)!.text('loginCardPasswordRequired')
+              : AppTranslations.of(context)!.text('loginCardUserNameRequired');
         } else if (value != null &&
             hintText == "Password" &&
             value.length < 6) {
-          return AppLocalizations.of(context)!.loginCardPasswordLimitLength;
+          return AppTranslations.of(context)!
+              .text('loginCardPasswordLimitLength');
         } else if (value != null &&
             hintText == "Username" &&
             !(value.contains("@"))) {
-          return AppLocalizations.of(context)!.loginCardUserNameCheck;
+          return AppTranslations.of(context)!.text('loginCardUserNameCheck');
         } else {
           return null;
         }

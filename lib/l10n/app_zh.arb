@@ -17,6 +17,7 @@
     "drawerDevice": "設備",
     "drawerDashboard": "儀表版",
     "drawerLogout": "登出",
+    "drawerPreferences": "偏好設定",
     "alertDialogConfirm": "確定",
     "usersFloatActionViewModule": "切換模式",
     "usersFloatActionAddUser": "新增使用者帳號",
@@ -32,5 +33,6 @@
     "usersDataTableHeaderAuthority": "權限",
     "usersDataTableSearchbyName": "按姓名搜尋",
     "usersDataTableSearchbyEmail": "按電子信箱搜尋",
-    "usersDataTableSearchbyAuthority": "按權限搜尋"
+    "usersDataTableSearchbyAuthority": "按權限搜尋",
+    "preferencesSelectLanguage": "選擇語言 :"
 }

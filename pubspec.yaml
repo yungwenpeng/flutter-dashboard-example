@@ -52,6 +52,7 @@ dependencies:
   path: ^1.8.2
   http: ^0.13.5
   data_table_2: ^2.3.8
+  restart_app: ^1.1.1
 
 dev_dependencies:
   flutter_driver:
@@ -89,6 +90,7 @@ flutter:
   assets:
     - assets/images/
     - .env
+    - lib/l10n/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

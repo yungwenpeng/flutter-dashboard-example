@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../localization/localization.dart';
 
 class ExpandableFab extends StatefulWidget {
   const ExpandableFab({
@@ -134,7 +135,8 @@ class _ExpandableFabState extends State<ExpandableFab>
           child: FloatingActionButton(
             onPressed: _toggle,
             heroTag: "viewModule",
-            tooltip: AppLocalizations.of(context)!.usersFloatActionViewModule,
+            tooltip:
+                AppTranslations.of(context)!.text('usersFloatActionViewModule'),
             elevation: 0.0,
             backgroundColor: const Color.fromARGB(255, 102, 168, 223),
             hoverColor: Colors.orange,

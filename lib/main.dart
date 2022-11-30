@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
+import 'localization/localization.dart';
 import 'models/models.dart';
-import 'pages/pages.dart';
 import 'route/route.dart';
 
 Future<void> main() async {
@@ -26,12 +27,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late MyAppRouterDelegate delegate;
   late MyAppRouteInformationParser parser;
+  late AppTranslationsDelegate _newLocaleDelegate;
 
   @override
   void initState() {
     super.initState();
     delegate = MyAppRouterDelegate();
     parser = MyAppRouteInformationParser();
+    _newLocaleDelegate = const AppTranslationsDelegate(newLocale: Locale("en"));
+    application.onLocaleChanged = onLocaleChange;
   }
 
   // This widget is the root of your application.
@@ -56,9 +60,21 @@ class _MyAppState extends State<MyApp> {
         routerDelegate: delegate,
         routeInformationParser: parser,
         backButtonDispatcher: RootBackButtonDispatcher(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: [
+          _newLocaleDelegate,
+          //provides localised strings
+          GlobalMaterialLocalizations.delegate,
+          //provides RTL support
+          GlobalWidgetsLocalizations.delegate,
+        ],
         supportedLocales: AppLocalizations.supportedLocales,
       ),
     );
+  }
+
+  void onLocaleChange(Locale locale) {
+    setState(() {
+      _newLocaleDelegate = AppTranslationsDelegate(newLocale: locale);
+    });
   }
 }

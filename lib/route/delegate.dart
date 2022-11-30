@@ -44,9 +44,17 @@ class MyAppRouterDelegate extends RouterDelegate<MyAppRouteConfiguration>
     notifyListeners();
   }
 
+  bool? _preferencesIn;
+  bool? get preferencesIn => _preferencesIn;
+  set preferencesIn(bool? value) {
+    _preferencesIn = value;
+    notifyListeners();
+  }
+
   _clear() {
     show404 = null;
     userListIn = null;
+    preferencesIn = null;
   }
 
   List<Page> get _landingStack => [const LandingPage()];
@@ -65,15 +73,33 @@ class MyAppRouterDelegate extends RouterDelegate<MyAppRouteConfiguration>
 
     onUserList() {
       userListIn = true;
+      preferencesIn = null;
+    }
+
+    onPreferences() {
+      userListIn = null;
+      preferencesIn = true;
     }
 
     return [
-      HomePage(onLogout: onLogout, onUserList: onUserList),
+      HomePage(
+        onLogout: onLogout,
+        onUserList: onUserList,
+        onPreferences: onPreferences,
+      ),
       if (userListIn != null)
         if (userListIn!)
           UserListPage(
             onLogout: onLogout,
             onUserList: onUserList,
+            onPreferences: onPreferences,
+          ),
+      if (preferencesIn != null)
+        if (preferencesIn!)
+          PreferencesPage(
+            onLogout: onLogout,
+            onUserList: onUserList,
+            onPreferences: onPreferences,
           ),
     ];
   }
@@ -108,8 +134,13 @@ class MyAppRouterDelegate extends RouterDelegate<MyAppRouteConfiguration>
           if (userListIn!) {
             userListIn = null;
           }
+        } else if (preferencesIn != null) {
+          if (preferencesIn!) {
+            preferencesIn = null;
+          }
         } else {
           userListIn = null;
+          preferencesIn = null;
         }
         return true;
       },
@@ -128,6 +159,8 @@ class MyAppRouterDelegate extends RouterDelegate<MyAppRouteConfiguration>
       return MyAppRouteConfiguration.home();
     } else if (loggedIn == true) {
       return MyAppRouteConfiguration.userList();
+    } else if (preferencesIn == true) {
+      return MyAppRouteConfiguration.preferences();
     } else {
       return null;
     }
@@ -142,9 +175,15 @@ class MyAppRouterDelegate extends RouterDelegate<MyAppRouteConfiguration>
         configuration.isLoginPage) {
       show404 = false;
       userListIn = null;
+      preferencesIn = null;
     } else if (configuration.isUserListPage) {
       show404 = false;
       userListIn = true;
+      preferencesIn = null;
+    } else if (configuration.isUserListPage) {
+      show404 = false;
+      userListIn = null;
+      preferencesIn = true;
     } else {
       print('setNewRoutePath: Could not set new route');
     }

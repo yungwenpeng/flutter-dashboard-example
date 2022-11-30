@@ -19,6 +19,8 @@ class MyAppRouteInformationParser
           return MyAppRouteConfiguration.login();
         case 'users':
           return MyAppRouteConfiguration.userList();
+        case 'preferences':
+          return MyAppRouteConfiguration.preferences();
         default:
           return MyAppRouteConfiguration.unKnow();
       }
@@ -40,6 +42,8 @@ class MyAppRouteInformationParser
       return const RouteInformation(location: '/home');
     } else if (configuration.isUserListPage) {
       return const RouteInformation(location: '/users');
+    } else if (configuration.isPreferencesPage) {
+      return const RouteInformation(location: '/preferences');
     } else {
       return null;
     }

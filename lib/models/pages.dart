@@ -30,7 +30,11 @@ class LoginPage extends Page {
 class HomePage extends Page {
   final VoidCallback onLogout;
   final VoidCallback onUserList;
-  const HomePage({required this.onLogout, required this.onUserList})
+  final VoidCallback onPreferences;
+  const HomePage(
+      {required this.onLogout,
+      required this.onUserList,
+      required this.onPreferences})
       : super(key: const ValueKey('HomePage'));
 
   @override
@@ -40,6 +44,7 @@ class HomePage extends Page {
       builder: (BuildContext context) => MyHomePage(
         onLogout: onLogout,
         onUserList: onUserList,
+        onPreferences: onPreferences,
       ),
     );
   }
@@ -48,7 +53,11 @@ class HomePage extends Page {
 class UserListPage extends Page {
   final VoidCallback onLogout;
   final VoidCallback onUserList;
-  const UserListPage({required this.onLogout, required this.onUserList})
+  final VoidCallback onPreferences;
+  const UserListPage(
+      {required this.onLogout,
+      required this.onUserList,
+      required this.onPreferences})
       : super(key: const ValueKey('UserListPage'));
 
   @override
@@ -58,6 +67,30 @@ class UserListPage extends Page {
       builder: (BuildContext context) => UserList(
         onLogout: onLogout,
         onUserList: onUserList,
+        onPreferences: onPreferences,
+      ),
+    );
+  }
+}
+
+class PreferencesPage extends Page {
+  final VoidCallback onLogout;
+  final VoidCallback onUserList;
+  final VoidCallback onPreferences;
+  const PreferencesPage(
+      {required this.onLogout,
+      required this.onUserList,
+      required this.onPreferences})
+      : super(key: const ValueKey('PreferencesPage'));
+
+  @override
+  Route createRoute(BuildContext context) {
+    return MaterialPageRoute(
+      settings: this,
+      builder: (BuildContext context) => MyPreferences(
+        onLogout: onLogout,
+        onUserList: onUserList,
+        onPreferences: onPreferences,
       ),
     );
   }
