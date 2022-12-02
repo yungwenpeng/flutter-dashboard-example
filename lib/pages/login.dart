@@ -100,7 +100,7 @@ class _LoginState extends State<Login> {
     final FormState? form = _formKey.currentState;
     if (form == null || !form.validate()) {
       showInSnackBar(
-          AppTranslations.of(context)!.text('oginButtonSubmitError'));
+          AppTranslations.of(context)!.text('loginButtonSubmitError'));
     } else {
       form.save();
       var userBaseProvider =

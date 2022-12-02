@@ -32,7 +32,7 @@
     "usersDataTableHeaderEmail": "Email",
     "usersDataTableHeaderAuthority": "Authority",
     "usersDataTableSearchbyName": "Search by name",
-    "usersDataTableSearchbyEmail": "Search by SW email",
+    "usersDataTableSearchbyEmail": "Search by email",
     "usersDataTableSearchbyAuthority": "Search by Authority",
     "preferencesSelectLanguage": "Select Language :"
 }

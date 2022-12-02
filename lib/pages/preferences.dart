@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:restart_app/restart_app.dart';
@@ -28,20 +31,24 @@ class _MyPreferencesState extends State<MyPreferences> {
   @override
   void initState() {
     super.initState();
+    defaultTargetPlatform == TargetPlatform.android
+        ? dropdownValue = Locale(Platform.localeName.split('_').first)
+        : dropdownValue = Locale(ui.window.locale.languageCode);
     _loadlanguageCode();
   }
 
   void _loadlanguageCode() async {
-    dropdownValue = const Locale('en');
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String languageCode = prefs.getString('languageCode') ?? 'en';
+    String languageCode =
+        prefs.getString('languageCode') ?? dropdownValue!.languageCode;
+    dropdownValue = Locale(languageCode);
     application.onLocaleChanged = onLocaleChange;
     onLocaleChange(Locale(languageCode));
-    dropdownValue = Locale(languageCode);
   }
 
   void onLocaleChange(Locale locale) async {
     setState(() {
+      //AppTranslationsDelegate(newLocale: locale);
       AppTranslations.load(locale);
     });
   }
