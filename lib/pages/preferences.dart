@@ -112,23 +112,40 @@ class _MyPreferencesState extends State<MyPreferences> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  if (dropdownValue == locale)
+                                    const Icon(Icons.check,
+                                        color: Colors.white, size: 32),
+                                  const SizedBox(width: 10),
                                   _flagWidget(countryCode, context),
                                   const SizedBox(width: 10),
-                                  dropdownValue == locale
-                                      ? Text(
-                                          name,
-                                          style: const TextStyle(
-                                            color: Color.fromARGB(
-                                                255, 189, 20, 20),
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        )
-                                      : Text(name),
+                                  Text(name),
                                 ],
                               ),
                             ));
                       }),
                     ).toList(),
+                    selectedItemBuilder: (context) {
+                      return L10n.all.map((locale) {
+                        final name = L10n.getName(locale.languageCode);
+                        final countryCode =
+                            L10n.getCountryFlag(locale.languageCode);
+                        return Align(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _flagWidget(countryCode, context),
+                              const SizedBox(width: 10),
+                              Text(
+                                name,
+                                style:
+                                    const TextStyle(color: Colors.purpleAccent),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList();
+                    },
                     onChanged: (value) async {
                       //print('onChanged value:$value, dropdownValue:$dropdownValue');
                       if (dropdownValue != Locale(value.toString())) {
