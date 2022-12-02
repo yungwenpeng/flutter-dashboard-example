@@ -1,8 +1,13 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'localization/localization.dart';
@@ -14,6 +19,7 @@ Future<void> main() async {
   // remove hash symbol(#) on the url like http://localhost:8080/#/
   // reference https://github.com/flutter/flutter/issues/33245#issuecomment-760214554
   setPathUrlStrategy();
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -34,8 +40,24 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     delegate = MyAppRouterDelegate();
     parser = MyAppRouteInformationParser();
-    _newLocaleDelegate = const AppTranslationsDelegate(newLocale: Locale("en"));
+    String languageCode = defaultTargetPlatform == TargetPlatform.android
+        ? Platform.localeName.split('_').first
+        : ui.window.locale.languageCode;
+    _newLocaleDelegate =
+        AppTranslationsDelegate(newLocale: Locale(languageCode));
     application.onLocaleChanged = onLocaleChange;
+  }
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String defaultLocale = defaultTargetPlatform == TargetPlatform.android
+        ? Platform.localeName.split('_').first
+        : ui.window.locale.languageCode;
+    String languageCode = prefs.getString('languageCode') ?? defaultLocale;
+    onLocaleChange(Locale(languageCode));
   }
 
   // This widget is the root of your application.
@@ -64,6 +86,7 @@ class _MyAppState extends State<MyApp> {
           _newLocaleDelegate,
           //provides localised strings
           GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
           //provides RTL support
           GlobalWidgetsLocalizations.delegate,
         ],

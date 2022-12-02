@@ -155,11 +155,11 @@ class MyAppRouterDelegate extends RouterDelegate<MyAppRouteConfiguration>
       return MyAppRouteConfiguration.login();
     } else if (show404 == true) {
       return MyAppRouteConfiguration.unKnow();
-    } else if (userListIn == null) {
+    } else if (userListIn == null && preferencesIn == null) {
       return MyAppRouteConfiguration.home();
-    } else if (loggedIn == true) {
+    } else if (loggedIn == true && preferencesIn == null) {
       return MyAppRouteConfiguration.userList();
-    } else if (preferencesIn == true) {
+    } else if (preferencesIn == true && userListIn == null) {
       return MyAppRouteConfiguration.preferences();
     } else {
       return null;
@@ -180,7 +180,7 @@ class MyAppRouterDelegate extends RouterDelegate<MyAppRouteConfiguration>
       show404 = false;
       userListIn = true;
       preferencesIn = null;
-    } else if (configuration.isUserListPage) {
+    } else if (configuration.isPreferencesPage) {
       show404 = false;
       userListIn = null;
       preferencesIn = true;

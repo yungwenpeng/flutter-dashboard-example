@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'route.dart';
 
@@ -33,19 +34,29 @@ class MyAppRouteInformationParser
   RouteInformation? restoreRouteInformation(
       MyAppRouteConfiguration configuration) {
     if (configuration.isUnKnow) {
+      setCurrentPath('/unknown');
       return const RouteInformation(location: '/unknown');
     } else if (configuration.isLanding) {
+      setCurrentPath('/');
       return null;
     } else if (configuration.isLoginPage) {
+      setCurrentPath('/login');
       return const RouteInformation(location: '/login');
     } else if (configuration.isHomePage) {
+      setCurrentPath('/home');
       return const RouteInformation(location: '/home');
     } else if (configuration.isUserListPage) {
+      setCurrentPath('/users');
       return const RouteInformation(location: '/users');
     } else if (configuration.isPreferencesPage) {
+      setCurrentPath('/preferences');
       return const RouteInformation(location: '/preferences');
-    } else {
-      return null;
     }
+    return null;
+  }
+
+  void setCurrentPath(String? path) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('currentPath', path!);
   }
 }

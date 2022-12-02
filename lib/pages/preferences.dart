@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -83,15 +84,15 @@ class _MyPreferencesState extends State<MyPreferences> {
                           .text('preferencesSelectLanguage'),
                       style: const TextStyle(
                           fontSize: 28,
-                          color: Color.fromARGB(255, 223, 98, 49),
-                          fontWeight: FontWeight.w600)),
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500)),
                   const SizedBox(height: 20),
                   DropdownButton(
                     value: dropdownValue,
                     style: const TextStyle(fontSize: 26, color: Colors.white),
-                    dropdownColor: const Color.fromARGB(255, 28, 163, 197),
+                    dropdownColor: const Color.fromARGB(255, 34, 151, 219),
                     icon: const Icon(Icons.language,
-                        color: Color.fromARGB(255, 243, 100, 33), size: 32),
+                        color: Color.fromARGB(255, 15, 100, 4), size: 36),
                     borderRadius: BorderRadius.circular(20),
                     items: L10n.all.map(
                       ((locale) {
@@ -105,12 +106,13 @@ class _MyPreferencesState extends State<MyPreferences> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   _flagWidget(countryCode, context),
+                                  const SizedBox(width: 10),
                                   dropdownValue == locale
                                       ? Text(
                                           name,
                                           style: const TextStyle(
                                             color: Color.fromARGB(
-                                                255, 250, 131, 34),
+                                                255, 189, 20, 20),
                                             fontWeight: FontWeight.w600,
                                           ),
                                         )
@@ -122,14 +124,19 @@ class _MyPreferencesState extends State<MyPreferences> {
                     ).toList(),
                     onChanged: (value) async {
                       //print('onChanged value:$value, dropdownValue:$dropdownValue');
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      await prefs.setString('languageCode', value.toString());
-                      setState(() {
-                        dropdownValue = Locale(value.toString());
-                        onLocaleChange(Locale(value.toString()));
-                      });
-                      Restart.restartApp();
+                      if (dropdownValue != Locale(value.toString())) {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        await prefs.setString('languageCode', value.toString());
+                        setState(() {
+                          dropdownValue = Locale(value.toString());
+                          onLocaleChange(Locale(value.toString()));
+                        });
+                        if (defaultTargetPlatform != TargetPlatform.android) {
+                          var path = prefs.getString('currentPath');
+                          Restart.restartApp(webOrigin: path);
+                        }
+                      }
                     },
                     /*underline: Container(
                         height: 1,

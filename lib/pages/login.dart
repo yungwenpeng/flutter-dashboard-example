@@ -1,7 +1,11 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../localization/localization.dart';
 import '../models/models.dart';
@@ -45,6 +49,26 @@ class _LoginState extends State<Login> {
     // Start listening to changes.
     usernameController.addListener(onUsernameValueChange);
     passwordController.addListener(onPasswordValueChange);
+    application.onLocaleChanged = onLocaleChange;
+  }
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String defaultLocale = defaultTargetPlatform == TargetPlatform.android
+        ? Platform.localeName.split('_').first
+        : ui.window.locale.languageCode;
+    String languageCode = prefs.getString('languageCode') ?? defaultLocale;
+    onLocaleChange(Locale(languageCode));
+  }
+
+  void onLocaleChange(Locale locale) {
+    setState(() {
+      AppTranslationsDelegate(newLocale: locale);
+      AppTranslations.load(locale);
+    });
   }
 
   void onUsernameValueChange() {

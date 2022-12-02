@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../localization/localization.dart';
 import '../models/models.dart';
@@ -33,6 +34,8 @@ class _MyDrawerState extends State<MyDrawer> {
         Provider.of<UserBaseProvider>(context, listen: false);
     var userBaseController = userBaseProvider.userBaseController;
     userBaseController.logout();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('currentPath');
   }
 
   @override
@@ -101,8 +104,8 @@ class _MyDrawerState extends State<MyDrawer> {
                     )));
         break;
       case 5:
-        widget.onPreferences();
         MyAppRouterDelegate().loggedIn = true;
+        widget.onPreferences();
         break;
     }
   }
